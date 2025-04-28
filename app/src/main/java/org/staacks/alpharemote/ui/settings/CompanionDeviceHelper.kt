@@ -46,6 +46,7 @@ object CompanionDeviceHelper {
                     //with remote disabled it is   0x03006400453122e800...
                     //This would suggest that we have to check for 0x04.
                     //So, until we can verify this on a few different models, we do not check this bit to ensure compatibility
+                    //For the a6700 we have to check for 0x04 in the 8th byte. (Remote disabled: 0x03006500553122bb..., Remote enabled: 0x03006500553122bf...)
                 )
                 .build()
             )

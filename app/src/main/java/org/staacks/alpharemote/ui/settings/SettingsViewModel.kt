@@ -39,6 +39,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         var cameraName: String?,
         var bluetoothPermissionGranted: Boolean,
         var notificationPermissionGranted: Boolean,
+        var locationPermissionGranted: Boolean,
         var bluetoothEnabled: Boolean
     )
 
@@ -56,12 +57,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         UNPAIR,
         REQUEST_BLUETOOTH_PERMISSION,
         REQUEST_NOTIFICATION_PERMISSION,
+        REQUEST_LOCATION_PERMISSION,
         ADD_CUSTOM_BUTTON,
         HELP_CONNECTION,
         HELP_CUSTOM_BUTTONS
     }
 
-    private val _uiState = MutableStateFlow(SettingsUIState(cameraState = SettingsUICameraState.OFFLINE, cameraError = null, cameraName = null, bluetoothPermissionGranted = true, notificationPermissionGranted = true, bluetoothEnabled = false))
+    private val _uiState = MutableStateFlow(SettingsUIState(cameraState = SettingsUICameraState.OFFLINE, cameraError = null, cameraName = null, bluetoothPermissionGranted = true, notificationPermissionGranted = true, locationPermissionGranted = true, bluetoothEnabled = false))
     val uiState: StateFlow<SettingsUIState> = _uiState.asStateFlow()
 
     private val _uiAction = MutableSharedFlow<SettingsUIAction>()
@@ -197,6 +199,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun requestNotificationPermission() {
         viewModelScope.launch {
             _uiAction.emit(SettingsUIAction.REQUEST_NOTIFICATION_PERMISSION)
+        }
+    }
+
+    fun requestLocationPermission() {
+        viewModelScope.launch {
+            _uiAction.emit(SettingsUIAction.REQUEST_LOCATION_PERMISSION)
         }
     }
 
