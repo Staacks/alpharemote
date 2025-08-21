@@ -24,18 +24,6 @@ val Context.settings: DataStore<Preferences> by preferencesDataStore(name = PREF
 class SettingsStore(context: Context) {
     private val settings = context.settings
 
-    private val notificationGrantedKey = booleanPreferencesKey("notificationGranted")
-    private val bluetoothGrantedKey = booleanPreferencesKey("bluetoothGranted")
-
-    private val cameraIdNameKey = stringPreferencesKey("cameraIdName")
-    private val cameraIdAddressKey = stringPreferencesKey("cameraIdAddress")
-    private val notificationButtonSizeKey = floatPreferencesKey("notificationButtonSize")
-
-    private val customButtonListBaseKey = "customButtonList"
-    private val customButtonListSetByUserKey = booleanPreferencesKey(customButtonListBaseKey + "_setbyuser")
-
-    private val broadcastControlKey = booleanPreferencesKey("broadcastControl")
-
     private fun setNullableFloat(data: MutablePreferences, key: Preferences.Key<Float>, value: Float?) {
         if (value == null) {
             data -= key
@@ -46,31 +34,31 @@ class SettingsStore(context: Context) {
 
     suspend fun setBluetoothGranted(granted: Boolean) {
         settings.edit { data ->
-            data[bluetoothGrantedKey] = granted
+            data[BLUETOOTH_GRANTED_KEY] = granted
         }
     }
 
     suspend fun setNotificationGranted(granted: Boolean) {
         settings.edit { data ->
-            data[notificationGrantedKey] = granted
+            data[NOTIFICATION_GRANTED_KEY] = granted
         }
     }
 
     suspend fun setCameraId(name: String, address: String) {
         settings.edit { data ->
-            data[cameraIdNameKey] = name
-            data[cameraIdAddressKey] = address
+            data[CAMERA_ID_NAME_KEY] = name
+            data[CAMERA_ID_ADDRESS_KEY] = address
         }
     }
 
     suspend fun getCameraId():  Pair<String?, String?> {
         val data = settings.data.firstOrNull()
-        return Pair(data?.get(cameraIdAddressKey),data?.get(cameraIdNameKey))
+        return Pair(data?.get(CAMERA_ID_ADDRESS_KEY),data?.get(CAMERA_ID_NAME_KEY))
     }
 
     suspend fun setNotificationButtonSize(size: Float) {
         settings.edit { data ->
-            data[notificationButtonSizeKey] = size
+            data[NOTIFICATION_BUTTON_SIZE_KEY] = size
         }
     }
 
@@ -82,14 +70,14 @@ class SettingsStore(context: Context) {
 
     val permissions: Flow<Permissions> = settings.data.map{
         Permissions(
-            it[bluetoothGrantedKey] ?: false,
-            it[notificationGrantedKey] ?: false,
-            it[broadcastControlKey] ?: false
+            it[BLUETOOTH_GRANTED_KEY] ?: false,
+            it[NOTIFICATION_GRANTED_KEY] ?: false,
+            it[EXTERNAL_BROADCAST_ENABLED_KEY] ?: false
         )
     }.distinctUntilChanged()
 
     suspend fun getNotificationButtonSize(): Float? {
-        return settings.data.firstOrNull()?.get(notificationButtonSizeKey)
+        return settings.data.firstOrNull()?.get(NOTIFICATION_BUTTON_SIZE_KEY)
     }
 
     data class CustomButtonSettings (
@@ -100,20 +88,20 @@ class SettingsStore(context: Context) {
     val customButtonSettings: Flow<CustomButtonSettings> = settings.data.map {
         CustomButtonSettings(
             assembleCameraActionList(it),
-            it[notificationButtonSizeKey] ?: 1.0f
+            it[NOTIFICATION_BUTTON_SIZE_KEY] ?: 1.0f
         )
     }.distinctUntilChanged()
 
     suspend fun saveCustomButtonList(list: List<CameraAction>) {
         settings.edit { data ->
-            data[customButtonListSetByUserKey] = true
+            data[CUSTOM_BUTTON_LIST_SET_BY_USER_KEY] = true
 
             for ((i, item) in list.withIndex()) {
-                val keyPreset = stringPreferencesKey(customButtonListBaseKey + "_" + i + "_preset")
-                val keyToggle = booleanPreferencesKey(customButtonListBaseKey + "_" + i + "_toggle")
-                val keySelftimer = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_selftimer")
-                val keyDuration = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_duration")
-                val keyStep = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_step")
+                val keyPreset = stringPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_preset")
+                val keyToggle = booleanPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_toggle")
+                val keySelftimer = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_selftimer")
+                val keyDuration = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_duration")
+                val keyStep = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_step")
 
                 data[keyPreset] = item.preset.name
                 data[keyToggle] = item.toggle
@@ -124,11 +112,11 @@ class SettingsStore(context: Context) {
             }
             var i = list.count()
             while (true) {
-                val keyPreset = stringPreferencesKey(customButtonListBaseKey + "_" + i + "_preset")
-                val keyToggle = booleanPreferencesKey(customButtonListBaseKey + "_" + i + "_toggle")
-                val keySelftimer = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_selftimer")
-                val keyDuration = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_duration")
-                val keyStep = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_step")
+                val keyPreset = stringPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_preset")
+                val keyToggle = booleanPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_toggle")
+                val keySelftimer = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_selftimer")
+                val keyDuration = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_duration")
+                val keyStep = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_step")
 
                 if (!data.contains(keyPreset))
                     break
@@ -144,17 +132,17 @@ class SettingsStore(context: Context) {
     }
 
     private fun assembleCameraActionList(data: Preferences): List<CameraAction>? {
-        if (data[customButtonListSetByUserKey] != true)
+        if (data[CUSTOM_BUTTON_LIST_SET_BY_USER_KEY] != true)
             return null
 
         val list = mutableListOf<CameraAction>()
         var i = 0
         while (true) {
-            val keyPreset = stringPreferencesKey(customButtonListBaseKey + "_" + i + "_preset")
-            val keyToggle = booleanPreferencesKey(customButtonListBaseKey + "_" + i + "_toggle")
-            val keySelftimer = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_selftimer")
-            val keyDuration = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_duration")
-            val keyStep = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_step")
+            val keyPreset = stringPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_preset")
+            val keyToggle = booleanPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_toggle")
+            val keySelftimer = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_selftimer")
+            val keyDuration = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_duration")
+            val keyStep = floatPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_" + i + "_step")
 
             if (!data.contains(keyPreset))
                 break
@@ -179,13 +167,25 @@ class SettingsStore(context: Context) {
         }
     }
 
-    suspend fun setBroadcastControl(allow: Boolean) {
+    suspend fun setEnableExternalBroadcastControl(allow: Boolean) {
         settings.edit { data ->
-            data[broadcastControlKey] = allow
+            data[EXTERNAL_BROADCAST_ENABLED_KEY] = allow
         }
     }
 
-    suspend fun getBroadcastControl():  Boolean {
-        return settings.data.firstOrNull()?.get(broadcastControlKey) ?: false
+    suspend fun getEnableExternalBroadcastControl():  Boolean {
+        return settings.data.firstOrNull()?.get(EXTERNAL_BROADCAST_ENABLED_KEY) ?: false
+    }
+
+    companion object{
+        private val NOTIFICATION_GRANTED_KEY = booleanPreferencesKey("notificationGranted")
+        private val BLUETOOTH_GRANTED_KEY = booleanPreferencesKey("bluetoothGranted")
+
+        private val CAMERA_ID_NAME_KEY = stringPreferencesKey("cameraIdName")
+        private val CAMERA_ID_ADDRESS_KEY = stringPreferencesKey("cameraIdAddress")
+        private val NOTIFICATION_BUTTON_SIZE_KEY = floatPreferencesKey("notificationButtonSize")
+        private val EXTERNAL_BROADCAST_ENABLED_KEY = booleanPreferencesKey("broadcastControl")
+        private const val CUSTOM_BUTTON_LIST_BASE_KEY = "customButtonList"
+        private val CUSTOM_BUTTON_LIST_SET_BY_USER_KEY = booleanPreferencesKey(CUSTOM_BUTTON_LIST_BASE_KEY + "_setbyuser")
     }
 }
