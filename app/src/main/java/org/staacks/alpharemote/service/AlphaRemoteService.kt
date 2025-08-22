@@ -1,6 +1,6 @@
 package org.staacks.alpharemote.service
 
-import android.Manifest
+
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+
 import android.content.pm.ServiceInfo
 import android.content.res.Configuration
 import android.os.Looper
@@ -55,8 +56,6 @@ import org.staacks.alpharemote.camera.CameraStateUnknown
 import org.staacks.alpharemote.camera.ble.BleConnectionState
 import org.staacks.alpharemote.camera.ble.FocusState
 import org.staacks.alpharemote.camera.ble.LocationService
-import org.staacks.alpharemote.camera.ble.LocationService.Status
-import org.staacks.alpharemote.camera.ble.LocationService.Status.*
 import org.staacks.alpharemote.camera.ble.RemoteControlService
 import org.staacks.alpharemote.camera.ble.ShutterState
 import org.staacks.alpharemote.utils.hasBluetoothPermission
@@ -90,39 +89,38 @@ class AlphaRemoteService : CompanionDeviceService() {
         .build()
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
+
         override fun onLocationResult(locationResult: LocationResult) {
             val lastLocation = locationResult.lastLocation
-            Log.d(
-                "LocationUpdates",
-                "Lat: ${lastLocation?.latitude}, Lng: ${lastLocation?.longitude}"
-            )
-            lastLocation?.let { cameraBLE?.setCameraLocation(it) }
-
+            if (lastLocation !== null && hasBluetoothPermission(this@AlphaRemoteService))
+                @SuppressLint("MissingPermission")
+                cameraBLE?.setCameraLocation(lastLocation)
         }
+
     }
 
     private val _cameraState = MutableStateFlow<CameraState>(CameraStateUnknown)
     val cameraState: StateFlow<CameraState> = _cameraState.asStateFlow()
 
 
-    @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         if (hasLocationPermission(this)) {
+            @SuppressLint("MissingPermission")
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
             )
-            Log.d("LocationUpdates", "Location updates started.")
+            Log.d(TAG, "Location updates started.")
         } else {
-            Log.d("LocationUpdates", "Location updates missing permission.")
+            Log.d(TAG, "Location updates missing permission.")
         }
 
     }
 
     private fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
-        Log.d("LocationUpdates", "Location updates stopped.")
+        Log.d(TAG, "Location updates stopped.")
     }
 
     companion object {
@@ -156,7 +154,8 @@ class AlphaRemoteService : CompanionDeviceService() {
             val newState =
                 intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE)
             Log.d(TAG, "Device changed bond state: $newState (address: ${intentDevice.address})")
-            if (intentDevice.address == cameraBLE?.deviceAddress) {
+            if (intentDevice.address == cameraBLE?.deviceAddress && hasBluetoothPermission(context)) {
+                @SuppressLint("MissingPermission")
                 cameraBLE?.updateBondedState(context, newState)
             }
         }
@@ -175,6 +174,8 @@ class AlphaRemoteService : CompanionDeviceService() {
         unregisterReceiver(bondStateReceiver)
     }
 
+
+    @Deprecated("Deprecated in Java")
     override fun onDeviceAppeared(address: String) {
         Log.d(MainActivity.TAG, "Device appeared: $address")
         try {
@@ -260,8 +261,8 @@ class AlphaRemoteService : CompanionDeviceService() {
                 scope.launch {
                     locationUpdateStatus.collect { newStatus ->
                         when (newStatus) {
-                            LocationUpdateEnabled -> startLocationUpdates()
-                            LocationUpdateDisabled -> stopLocationUpdates()
+                            LocationService.Status.LocationUpdateEnabled -> startLocationUpdates()
+                            LocationService.Status.LocationUpdateDisabled -> stopLocationUpdates()
                             else -> {}
                         }
                     }
@@ -273,7 +274,6 @@ class AlphaRemoteService : CompanionDeviceService() {
                             when (it) {
                                 is CameraStateReady ->
                                     it.copy(name = newName)
-
                                 else -> CameraStateReady(
                                     name = newName,
                                     deviceAddress,
@@ -321,7 +321,7 @@ class AlphaRemoteService : CompanionDeviceService() {
 
 
             }
-
+            @SuppressLint("MissingPermission")
             cameraBLE?.connectToDevice(this)
         } else {
             Log.w(
@@ -353,6 +353,7 @@ class AlphaRemoteService : CompanionDeviceService() {
 
 
         if (cameraBLE !== null) {
+            @SuppressLint("MissingPermission")
             cameraBLE?.disconnectFromDevice()
             cameraBLE = null
             job.cancelChildren()
@@ -428,7 +429,10 @@ class AlphaRemoteService : CompanionDeviceService() {
             }
 
             DISCONNECT_INTENT_ACTION -> {
-                cameraBLE?.disconnectFromDevice()
+                if(hasBluetoothPermission(this)) {
+                    @SuppressLint("MissingPermission")
+                    cameraBLE?.disconnectFromDevice()
+                }
             }
 
             ADVANCED_SEQUENCE_INTENT_ACTION -> {
@@ -502,6 +506,7 @@ class AlphaRemoteService : CompanionDeviceService() {
             pendingActionSteps.clear()
             for (button in ButtonCode.entries) {
                 val action = CAButton(false, button)
+                @SuppressLint("MissingPermission")
                 cameraBLE?.executeCameraActionStep(action)
                 _cameraState.update {
                     if (it is CameraStateReady) {
@@ -558,6 +563,7 @@ class AlphaRemoteService : CompanionDeviceService() {
         while ((pendingActionSteps.peek() is CAButton || pendingActionSteps.peek() is CAJog)) {
             pendingActionSteps.poll()?.let {
                 updatePendingActionStatistics()
+                @SuppressLint("MissingPermission")
                 cameraBLE?.executeCameraActionStep(it)
             }
         }
