@@ -2,26 +2,37 @@ package org.staacks.alpharemote.ui.camera
 
 import android.view.MotionEvent
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.staacks.alpharemote.camera.CameraStateReady
-import org.staacks.alpharemote.service.AlphaRemoteService
-import org.staacks.alpharemote.service.ServiceRunning
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.staacks.alpharemote.camera.CameraStateReady
+import org.staacks.alpharemote.service.AlphaRemoteService
+import org.staacks.alpharemote.service.ServiceRunning
+
 
 class CameraViewModel : ViewModel() {
 
     data class CameraUIState (
         var connected: Boolean = false,
         var serviceState: ServiceRunning? = null,
-        var cameraState: CameraStateReady? = null
+        var cameraState: CameraStateReady? = null,
+
+        var bulbToggle: ObservableField<Boolean> = ObservableField(false),
+        var bulbDuration: Double? = 5.0,
+        var intervalToggle: ObservableField<Boolean> = ObservableField(false),
+        var intervalCount: Int? = 50,
+        var intervalDuration: Double? = 3.0,
     )
 
     sealed class CameraUIAction
@@ -33,8 +44,7 @@ class CameraViewModel : ViewModel() {
     enum class GenericCameraUIActionType {
         GOTO_DEVICE_SETTINGS,
         HELP_REMOTE,
-        START_BULB,
-        START_INTERVAL
+        START_ADVANCED_SEQUENCE
     }
 
     data class DefaultRemoteButtonCameraUIAction (
@@ -52,9 +62,13 @@ class CameraViewModel : ViewModel() {
         viewModelScope.launch {
             AlphaRemoteService.serviceState.collectLatest {
                 (it as? ServiceRunning)?.also { serviceRunning ->
-                    _uiState.value = CameraUIState(serviceState = serviceRunning, cameraState = (serviceRunning.cameraState as? CameraStateReady), connected = (serviceRunning.cameraState is CameraStateReady))
+                    _uiState.value = uiState.value.copy(
+                        serviceState = serviceRunning,
+                        cameraState = (serviceRunning.cameraState as? CameraStateReady),
+                        connected = (serviceRunning.cameraState is CameraStateReady)
+                    )
                 } ?: run {
-                    _uiState.value = CameraUIState(serviceState = null, cameraState = null, connected = false)
+                    _uiState.value = uiState.value.copy(serviceState = null, cameraState = null, connected = false)
                 }
             }
         }
@@ -87,15 +101,9 @@ class CameraViewModel : ViewModel() {
         return true
     }
 
-    fun startBulb() {
+    fun startAdvancedSequence() {
         viewModelScope.launch {
-            _uiAction.emit(GenericCameraUIAction(GenericCameraUIActionType.START_BULB))
-        }
-    }
-
-    fun startInterval() {
-        viewModelScope.launch {
-            _uiAction.emit(GenericCameraUIAction(GenericCameraUIActionType.START_INTERVAL))
+            _uiAction.emit(GenericCameraUIAction(GenericCameraUIActionType.START_ADVANCED_SEQUENCE))
         }
     }
 

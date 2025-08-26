@@ -9,5 +9,6 @@ class ServiceStateGone : ServiceState()
 data class ServiceRunning(
     val cameraState: CameraState,
     val countdown: Long?,
-    val countdownLabel: String?
+    val countdownLabel: String?,
+    val pendingTriggerCount: Int = 0,
 ) : ServiceState()

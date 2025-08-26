@@ -1,5 +1,7 @@
 package org.staacks.alpharemote.camera
 
+import android.os.SystemClock
+
 sealed class CameraState
 
 class CameraStateGone : CameraState()
@@ -13,11 +15,23 @@ data class CameraStateIdentified(
     val address: String
 ) : CameraState()
 
+class ReportedBoolean() {
+    var lastChange: Long? = null
+    var state = false
+        set(value) {
+            field = value
+            lastChange = SystemClock.elapsedRealtime()
+        }
+    constructor(state: Boolean) : this() {
+        this.state = state
+    }
+}
+
 data class CameraStateReady(
     val name: String?,
-    val focus: Boolean,
-    val shutter: Boolean,
-    val recording: Boolean,
+    val focus: ReportedBoolean,
+    val shutter: ReportedBoolean,
+    val recording: ReportedBoolean,
     val pressedButtons: Set<ButtonCode>,
     val pressedJogs: Set<JogCode>,
     val mediaStatus: CameraMediaStatus?,

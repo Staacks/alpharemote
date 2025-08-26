@@ -15,7 +15,8 @@ data class CAWaitFor (
 
 data class CAButton (
     val pressed: Boolean,
-    val button: ButtonCode
+    val button: ButtonCode,
+    val isSequenceTrigger: Boolean = false,
 ) : CameraActionStep() {
     fun getCode(): Byte {
         return button.code or (if (pressed) 0x01 else 0x00)

@@ -69,128 +69,148 @@
                 tools:layout_editor_absoluteX="4dp"
                 tools:layout_editor_absoluteY="4dp">
 
-                <Button
-                    android:id="@+id/button11"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:onClick="@{() -> viewModel.helpRemote()}"
-                    android:text="@string/help"
-                    android:visibility="@{viewModel.uiState.serviceState.countdownLabel == null ? View.VISIBLE : View.INVISIBLE}"
-                    app:icon="@drawable/baseline_help_24"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></Button>
+            <Button
+                android:id="@+id/button11"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="@{viewModel.uiState.serviceState.countdownLabel == null ? View.VISIBLE : View.INVISIBLE}"
+                android:text="@string/help"
+                android:gravity="center_horizontal|center_vertical"
+                app:icon="@drawable/baseline_help_24"
+                android:onClick="@{() -> viewModel.helpRemote()}"
+                >
+            </Button>
 
-                <!-- Status -->
+            <!-- Status -->
 
-                <TextView
-                    android:id="@+id/status_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:maxLines="1"
-                    android:text="@{viewModel.uiState.cameraState.name == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.name}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/status_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="@{viewModel.uiState.cameraState.name == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.name}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:maxLines="1"
+                />
 
-                <TextView
-                    android:id="@+id/status_battery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:maxLines="1"
-                    android:text="@{viewModel.uiState.cameraState.batteryStatus == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.batteryStatus.description}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:visibility="@{viewModel.uiState.cameraState.batteryStatus == null ? View.INVISIBLE : View.VISIBLE}"
-                    app:layout_constraintEnd_toStartOf="@+id/status_media"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/status_name"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/status_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:maxLines="1"
+                android:text="@{viewModel.uiState.cameraState.batteryStatus == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.batteryStatus.description}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:visibility="@{viewModel.uiState.cameraState.batteryStatus == null ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintEnd_toStartOf="@+id/status_media"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/status_name"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/status_media"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:maxLines="1"
-                    android:text="@{viewModel.uiState.cameraState.mediaStatus == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.mediaStatus.description}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:visibility="@{viewModel.uiState.cameraState.mediaStatus == null ? View.INVISIBLE : View.VISIBLE}"
-                    app:layout_constraintEnd_toStartOf="@+id/button11"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/status_battery"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/status_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:maxLines="1"
+                android:text="@{viewModel.uiState.cameraState.mediaStatus == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.mediaStatus.description}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:visibility="@{viewModel.uiState.cameraState.mediaStatus == null ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintEnd_toStartOf="@+id/button11"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/status_battery"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/status_focus"
-                    android:layout_width="@dimen/activity_status_size"
-                    android:layout_height="@dimen/activity_status_size"
-                    android:layout_margin="4dp"
-                    android:alpha="@{viewModel.uiState.cameraState.focus ? 1.0f : 0.5f}"
-                    android:contentDescription="@string/status_focus"
-                    android:src="@drawable/status_focus"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/status_name"
-                    app:tint="?attr/colorCustomButton" />
+            <ImageView
+                android:id="@+id/status_focus"
+                android:layout_width="@dimen/activity_status_size"
+                android:layout_height="@dimen/activity_status_size"
+                android:layout_margin="4dp"
+                android:src="@drawable/status_focus"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/status_name"
+                app:tint="?attr/colorCustomButton"
+                android:alpha="@{viewModel.uiState.cameraState.focus.state ? 1.0f : 0.5f}"
+                android:contentDescription="@string/status_focus" />
 
-                <ImageView
-                    android:id="@+id/status_shutter"
-                    android:layout_width="@dimen/activity_status_size"
-                    android:layout_height="@dimen/activity_status_size"
-                    android:layout_margin="4dp"
-                    android:alpha="@{viewModel.uiState.cameraState.shutter ? 1.0f : 0.5f}"
-                    android:contentDescription="@string/status_shutter"
-                    android:src="@drawable/status_shutter"
-                    app:layout_constraintStart_toEndOf="@id/status_focus"
-                    app:layout_constraintTop_toBottomOf="@id/status_name"
-                    app:tint="?attr/colorCustomButton" />
+            <ImageView
+                android:id="@+id/status_shutter"
+                android:layout_width="@dimen/activity_status_size"
+                android:layout_height="@dimen/activity_status_size"
+                android:layout_margin="4dp"
+                android:src="@drawable/status_shutter"
+                app:layout_constraintStart_toEndOf="@id/status_focus"
+                app:layout_constraintTop_toBottomOf="@id/status_name"
+                app:tint="?attr/colorCustomButton"
+                android:alpha="@{viewModel.uiState.cameraState.shutter.state ? 1.0f : 0.5f}"
+                android:contentDescription="@string/status_shutter" />
 
-                <ImageView
-                    android:id="@+id/status_recording"
-                    android:layout_width="@dimen/activity_status_size"
-                    android:layout_height="@dimen/activity_status_size"
-                    android:layout_margin="4dp"
-                    android:alpha="@{viewModel.uiState.cameraState.recording ? 1.0f : 0.5f}"
-                    android:contentDescription="@string/status_recording"
-                    android:src="@drawable/status_recording"
-                    app:layout_constraintStart_toEndOf="@id/status_shutter"
-                    app:layout_constraintTop_toBottomOf="@id/status_name" />
+            <ImageView
+                android:id="@+id/status_recording"
+                android:layout_width="@dimen/activity_status_size"
+                android:layout_height="@dimen/activity_status_size"
+                android:layout_margin="4dp"
+                android:src="@drawable/status_recording"
+                app:layout_constraintStart_toEndOf="@id/status_shutter"
+                app:layout_constraintTop_toBottomOf="@id/status_name"
+                android:alpha="@{viewModel.uiState.cameraState.recording.state ? 1.0f : 0.5f}"
+                android:contentDescription="@string/status_recording" />
 
-                <!-- Countdown -->
+            <Chronometer
+                android:id="@+id/status_recording_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_constraintStart_toEndOf="@id/status_recording"
+                app:layout_constraintTop_toTopOf="@id/status_recording"
+                app:layout_constraintBottom_toBottomOf="@id/status_recording"
+                android:countDown="false"
+                android:visibility="@{viewModel.uiState.cameraState.recording.state ? View.VISIBLE : View.INVISIBLE}"
+                android:textColor="#ff0000"
+                android:gravity="center_vertical|start"
+                />
 
-                <TextView
-                    android:id="@+id/status_action"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="@{viewModel.uiState.serviceState.countdownLabel}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:visibility="@{viewModel.uiState.serviceState.countdownLabel == null ? View.INVISIBLE : View.VISIBLE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <!-- Countdown -->
 
-                <Chronometer
-                    android:id="@+id/status_countdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:countDown="true"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:visibility="@{viewModel.uiState.serviceState.countdown == null ? View.INVISIBLE : View.VISIBLE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/status_action" />
+            <TextView
+                android:id="@+id/status_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="@{viewModel.uiState.serviceState.countdownLabel == null ? View.INVISIBLE : View.VISIBLE}"
+                android:text="@{viewModel.uiState.serviceState.countdownLabel}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                />
 
-                <!-- Default remote -->
+            <Chronometer
+                android:id="@+id/status_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/status_action"
+                android:countDown="true"
+                android:visibility="@{viewModel.uiState.serviceState.countdown == null ? View.INVISIBLE : View.VISIBLE}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                />
 
-                <include
-                    android:id="@+id/default_remote"
-                    layout="@layout/fragment_camera_include_default_buttons"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/advanced_controls_drawer_peek" />
+            <!-- Default remote -->
+
+            <include
+                android:id="@+id/default_remote"
+                layout="@layout/fragment_camera_include_default_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/advanced_controls_drawer_peek"
+                />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

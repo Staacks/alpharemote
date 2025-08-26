@@ -14,9 +14,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +37,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import org.staacks.alpharemote.MainActivity
 import org.staacks.alpharemote.R
 import org.staacks.alpharemote.camera.CameraAction
 import org.staacks.alpharemote.databinding.FragmentSettingsBinding
@@ -42,10 +48,6 @@ import org.staacks.alpharemote.service.AlphaRemoteService
 import org.staacks.alpharemote.ui.help.HelpDialogFragment
 import org.staacks.alpharemote.ui.settings.CompanionDeviceHelper.pairCompanionDevice
 import org.staacks.alpharemote.ui.settings.CompanionDeviceHelper.startObservingDevicePresence
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import org.staacks.alpharemote.MainActivity
 
 interface CustomButtonListEventReceiver {
     fun startDragging(viewHolder: RecyclerView.ViewHolder)
@@ -128,8 +130,10 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
 
         context?.registerReceiver(bondStateReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
         context?.registerReceiver(bluetoothStateReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        context?.registerReceiver(locationServiceStateReceiver, IntentFilter(LocationManager.MODE_CHANGED_ACTION))
 
         checkBluetoothState()
+        checkLocationServiceState()
         checkBluetoothPermissionState()
         checkNotificationPermissionState()
         checkAssociations()
@@ -137,10 +141,20 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // While a state change of the location service is captured by a BroadcastReceiver, we
+        // have no other method to detect a change of the "Bluetooth Scanning" setting if the user
+        // just switched to its settings to toggle it.
+        checkLocationServiceState()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         context?.unregisterReceiver(bondStateReceiver)
         context?.unregisterReceiver(bluetoothStateReceiver)
+        context?.unregisterReceiver(locationServiceStateReceiver)
         _binding = null
     }
 
@@ -155,6 +169,13 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d(MainActivity.TAG, "SettingsFragment received BluetoothAdapter.ACTION_STATE_CHANGED.")
             checkBluetoothState()
+        }
+    }
+
+    private val locationServiceStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(MainActivity.TAG, "SettingsFragment received LocationManager.MODE_CHANGED_ACTION.")
+            checkLocationServiceState()
         }
     }
 
@@ -291,6 +312,16 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
     private fun checkBluetoothState() {
         val enabled = BluetoothAdapter.getDefaultAdapter().state == BluetoothAdapter.STATE_ON
         binding.viewModel?.updateBluetoothState(enabled)
+    }
+
+    private fun checkLocationServiceState() {
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val bleScanning = try {
+            Settings.Global.getInt(context?.contentResolver, "ble_scan_always_enabled") == 1
+        } catch (_: Exception) {
+            true // In this case, the setting has probably never been touched, which should be fine.
+        }
+        binding.viewModel?.updateLocationServiceState(locationManager.isLocationEnabled, bleScanning)
     }
 
     private fun setupCustomButtonList(customButtonListFlow: MutableStateFlow<List<CameraAction>?>) {

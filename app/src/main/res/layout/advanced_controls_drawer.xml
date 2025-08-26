@@ -48,178 +48,217 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/custom_buttons" />
 
-        <TextView
-            android:id="@+id/bulb_title"
-            android:layout_marginTop="16dp"
-            android:layout_width="match_parent"
+        <ScrollView
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="400dp"
             android:layout_height="wrap_content"
-            android:text="@string/camera_advanced_bulb_title"
+            app:layout_constrainedHeight="true"
             app:layout_constraintTop_toBottomOf="@id/dividerAboveBulb"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-        <TextView
-            android:id="@+id/bulb_duration_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_advanced_bulb_duration"
-            app:layout_constraintTop_toTopOf="@id/bulb_duration"
-            app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
-            app:layout_constraintEnd_toStartOf="@id/bulb_duration"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:gravity="start|center_vertical"
-            android:labelFor="@id/bulb_duration"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-        <EditText
-            android:id="@+id/bulb_duration"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:importantForAutofill="no"
-            app:layout_constraintStart_toEndOf="@id/label_barrier"
-            app:layout_constraintEnd_toStartOf="@id/bulb_duration_unit"
-            app:layout_constraintTop_toBottomOf="@id/bulb_title"
-            android:inputType="number|numberDecimal"
-            />
-
-        <TextView
-            android:id="@+id/bulb_duration_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/bulb_duration"
-            app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
-            app:layout_constraintStart_toEndOf="@id/bulb_duration"
-            app:layout_constraintEnd_toStartOf="@id/button_space_bulb"
-            android:text="@string/seconds" />
-
-        <Space
-            android:id="@+id/button_space_bulb"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/bulb_duration"
-            app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
-            app:layout_constraintStart_toEndOf="@id/bulb_duration_unit"
-            app:layout_constraintEnd_toStartOf="@id/bulb_action"
-            />
-
-        <Button
-            android:id="@+id/bulb_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/bulb_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_space_bulb"
-            android:gravity="center_horizontal|center_vertical"
-            android:onClick="@{() -> viewModel.startBulb()}"
-            android:text="@{viewModel.uiState.serviceState.countdown == null ? @string/camera_advanced_start : @string/camera_advanced_abort}" />
+            android:orientation="vertical"
+            android:gravity="center"
+            >
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/bulb_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="bulb_action,bulb_duration_label,bulb_duration" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            >
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/dividerAboveInterval"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/bulb_barrier" />
+                <ImageView
+                    android:id="@+id/bulb_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/adv_bulb"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintTop_toTopOf="@id/bulb_toggle"
+                    app:layout_constraintBottom_toBottomOf="@id/bulb_toggle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:tint="?android:colorForeground"
+                    />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/bulb_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_advanced_bulb_title"
+                    android:layout_marginStart="16dp"
+                    android:checked="@={viewModel.uiState.bulbToggle}"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/bulb_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="start|center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    />
+
+                <TextView
+                    android:id="@+id/bulb_duration_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_advanced_bulb_duration"
+                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    app:layout_constraintTop_toTopOf="@id/bulb_duration"
+                    app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
+                    app:layout_constraintStart_toStartOf="@id/bulb_toggle"
+                    android:gravity="start|center_vertical"
+                    android:labelFor="@id/bulb_duration" />
+
+                <EditText
+                    android:id="@+id/bulb_duration"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    app:layout_constraintStart_toEndOf="@id/label_barrier"
+                    app:layout_constraintEnd_toStartOf="@id/bulb_duration_unit"
+                    app:layout_constraintTop_toBottomOf="@id/bulb_toggle"
+                    android:inputType="number|numberDecimal"
+                    android:text="@={viewModel.uiState.bulbDuration}"
+                    android:enabled="@{viewModel.uiState.bulbToggle}"
+                    />
+
+                <TextView
+                    android:id="@+id/bulb_duration_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/bulb_duration"
+                    app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
+                    app:layout_constraintStart_toEndOf="@id/bulb_duration"
+                    android:text="@string/seconds"
+                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    />
+
+                <TextView
+                    android:id="@+id/bulb_note"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_advanced_bulb_note"
+                    app:layout_constraintTop_toBottomOf="@id/bulb_duration"
+                    app:layout_constraintStart_toStartOf="@id/bulb_toggle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    />
+
+                <ImageView
+                    android:id="@+id/interval_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/adv_interval"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintTop_toTopOf="@id/interval_toggle"
+                    app:layout_constraintBottom_toBottomOf="@id/interval_toggle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:tint="?android:colorForeground"
+                    />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/interval_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_advanced_interval_title"
+                    app:layout_constraintStart_toStartOf="@id/bulb_toggle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:checked="@={viewModel.uiState.intervalToggle}"
+                    app:layout_constraintTop_toBottomOf="@id/bulb_note"
+                    android:gravity="start|center_vertical"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    />
+
+                <TextView
+                    android:id="@+id/interval_count_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_advanced_interval_count"
+                    app:layout_constraintTop_toTopOf="@id/interval_count"
+                    app:layout_constraintBottom_toBottomOf="@id/interval_count"
+                    app:layout_constraintStart_toStartOf="@id/interval_toggle"
+                    android:gravity="start|center_vertical"
+                    android:labelFor="@id/interval_count"
+                    android:alpha="@{viewModel.uiState.intervalToggle ? 1.0f : 0.5f}"
+                    />
+
+                <EditText
+                    android:id="@+id/interval_count"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    app:layout_constraintStart_toEndOf="@id/label_barrier"
+                    app:layout_constraintTop_toBottomOf="@id/interval_toggle"
+                    android:inputType="number"
+                    android:text="@={viewModel.uiState.intervalCount}"
+                    android:enabled="@{viewModel.uiState.intervalToggle}"
+                    />
+
+                <TextView
+                    android:id="@+id/interval_duration_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_advanced_interval_duration"
+                    android:alpha="@{viewModel.uiState.intervalToggle ? 1.0f : 0.5f}"
+                    app:layout_constraintTop_toTopOf="@id/interval_duration"
+                    app:layout_constraintBottom_toBottomOf="@id/interval_duration"
+                    app:layout_constraintStart_toStartOf="@id/interval_toggle"
+                    android:gravity="start|center_vertical"
+                    android:labelFor="@id/interval_duration" />
+
+                <EditText
+                    android:id="@+id/interval_duration"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    app:layout_constraintStart_toEndOf="@id/label_barrier"
+                    app:layout_constraintEnd_toStartOf="@id/interval_duration_unit"
+                    app:layout_constraintTop_toBottomOf="@id/interval_count"
+                    android:inputType="number|numberDecimal"
+                    android:text="@={viewModel.uiState.intervalDuration}"
+                    android:enabled="@{viewModel.uiState.intervalToggle}"
+                    />
+
+                <TextView
+                    android:id="@+id/interval_duration_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/interval_duration"
+                    app:layout_constraintBottom_toBottomOf="@id/interval_duration"
+                    app:layout_constraintStart_toEndOf="@id/interval_duration"
+                    android:text="@string/seconds"
+                    android:alpha="@{viewModel.uiState.intervalToggle ? 1.0f : 0.5f}"
+                    />
 
 
-        <TextView
-            android:id="@+id/interval_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/camera_advanced_interval_title"
-            app:layout_constraintTop_toBottomOf="@id/dividerAboveInterval"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/label_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="bulb_duration_label,interval_count_label,interval_duration_label"
+                    />
 
-        <TextView
-            android:id="@+id/interval_count_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_advanced_interval_count"
-            app:layout_constraintTop_toTopOf="@id/interval_count"
-            app:layout_constraintBottom_toBottomOf="@id/interval_count"
-            app:layout_constraintEnd_toStartOf="@id/interval_count"
-            app:layout_constraintStart_toStartOf="parent"
-            android:gravity="start|center_vertical"
-            android:labelFor="@id/interval_count"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/start_sequence_action"
+                    app:layout_constraintBottom_toBottomOf="@id/start_sequence_action"
+                    app:layout_constraintEnd_toStartOf="@id/start_sequence_action"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{@string/camera_advanced_pending_triggers(viewModel.uiState.serviceState.pendingTriggerCount)}"
+                    android:visibility="@{viewModel.uiState.serviceState.pendingTriggerCount > 0 ? View.VISIBLE : View.GONE}"
+                    />
 
-        <EditText
-            android:id="@+id/interval_count"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:importantForAutofill="no"
-            app:layout_constraintStart_toEndOf="@id/label_barrier"
-            app:layout_constraintTop_toBottomOf="@id/interval_title"
-            android:inputType="number|numberDecimal"
-            />
+                <Button
+                    android:id="@+id/start_sequence_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/interval_duration"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:onClick="@{() -> viewModel.startAdvancedSequence()}"
+                    android:text="@{viewModel.uiState.serviceState.countdown == null ? @string/camera_advanced_start : @string/camera_advanced_abort}"
+                    android:enabled="@{viewModel.uiState.bulbToggle || viewModel.uiState.intervalToggle}"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/interval_duration_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_advanced_interval_duration"
-            app:layout_constraintTop_toTopOf="@id/interval_duration"
-            app:layout_constraintBottom_toBottomOf="@id/interval_duration"
-            app:layout_constraintEnd_toStartOf="@id/interval_duration"
-            app:layout_constraintStart_toStartOf="parent"
-            android:gravity="start|center_vertical"
-            android:labelFor="@id/interval_duration"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-        <EditText
-            android:id="@+id/interval_duration"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:importantForAutofill="no"
-            app:layout_constraintStart_toEndOf="@id/label_barrier"
-            app:layout_constraintEnd_toStartOf="@id/interval_duration_unit"
-            app:layout_constraintTop_toBottomOf="@id/interval_count"
-            android:inputType="number|numberDecimal"
-            />
-
-        <TextView
-            android:id="@+id/interval_duration_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/interval_duration"
-            app:layout_constraintBottom_toBottomOf="@id/interval_duration"
-            app:layout_constraintStart_toEndOf="@id/interval_duration"
-            app:layout_constraintEnd_toStartOf="@id/button_space_interval"
-            android:text="@string/seconds" />
-
-        <Space
-            android:id="@+id/button_space_interval"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/interval_duration"
-            app:layout_constraintBottom_toBottomOf="@id/interval_duration"
-            app:layout_constraintStart_toEndOf="@id/interval_duration_unit"
-            app:layout_constraintEnd_toStartOf="@id/interval_action"
-            />
-
-        <Button
-            android:id="@+id/interval_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/interval_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_space_interval"
-            android:gravity="center_horizontal|center_vertical"
-            android:onClick="@{() -> viewModel.startInterval()}"
-            android:text="@{viewModel.uiState.serviceState.countdown == null ? @string/camera_advanced_start : @string/camera_advanced_abort}" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/label_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="end"
-            app:constraint_referenced_ids="bulb_duration_label,interval_count_label,interval_duration_label"
-            />
+        </ScrollView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

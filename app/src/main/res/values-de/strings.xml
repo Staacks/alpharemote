@@ -16,10 +16,12 @@
     <string name="camera_advanced_bulb_title">Timer für Bulb-Modus</string>
     <string name="camera_advanced_bulb_duration">Dauer</string>
     <string name="camera_advanced_bulb_timer_label">Bulb</string>
+    <string name="camera_advanced_bulb_note">Für diese Funktion musst du die Kamera selbst auf Bulb stellen.</string>
     <string name="camera_advanced_interval_title">Intervalometer</string>
     <string name="camera_advanced_interval_duration">Intervall</string>
     <string name="camera_advanced_interval_count">Anzahl der Belichtungen</string>
     <string name="camera_advanced_interval_timer_label">Intervall</string>
+    <string name="camera_advanced_pending_triggers">%1$d verbleibend</string>
     <string name="camera_advanced_start">Start</string>
     <string name="camera_advanced_abort">Abbrechen</string>
 
@@ -27,6 +29,8 @@
     <string name="permission_notification_rationale">Wenn du die Kamera aus dem Benachrichtigungsbereich deines Handys steuern möchtest, musst du der App erlauben, Benachrichtigungen anzuzeigen.</string>
 
     <string name="settings_bluetooth_disabled">Bluetooth is momentan ausgeschaltet. Bitte schalte Bluetooth ein um diese App zu nutzen.</string>
+    <string name="settings_location_service_disabled">Standortdienste sind momentan ausgeschaltet. Auf einigen Geräten ist dies kein Problem. Solltest du aber Probleme haben, dich mit der Kamera zu verbinden, aktiviere bitte die Standortdienste in deinen Android-Einstellungen.</string>
+    <string name="settings_ble_scanning_disabled">Bluetooth Suche ist momentan ausgeschaltet, was sehr wahrscheinlich verhindert, dass dein Handy die Kamera sehen kann. Bitte schaue nach \"Bluetooth Suche\" unter \"Standortdienste\" in deinen Android-Einstellungen.</string>
 
     <string name="settings_missing_permission_title">Berechtigung fehlt</string>
     <string name="settings_missing_notification_permission_warning">Achtung: Diese App benötigt eine Berechtigung um Benachrichtigungen anzuzeigen. Ohne diese Berechtigung funktioniert die Fernbedienung zwar, aber die Tasten werden nicht im Benachrichtigungsbereich deines Handys angezeigt.</string>

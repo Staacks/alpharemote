@@ -139,23 +139,23 @@ class NotificationUI(private val context: Context) {
                 remoteViews.setColorInt(
                     R.id.status_recording,
                     "setColorFilter",
-                    if (state.recording) Color.RED else black,
-                    if (state.recording) Color.RED else white
+                    if (state.recording.state) Color.RED else black,
+                    if (state.recording.state) Color.RED else white
                 )
                 remoteViews.setFloat(
                     R.id.status_focus,
                     "setAlpha",
-                    if (state.focus) 1.0f else 0.5f
+                    if (state.focus.state) 1.0f else 0.5f
                 )
                 remoteViews.setFloat(
                     R.id.status_shutter,
                     "setAlpha",
-                    if (state.shutter) 1.0f else 0.5f
+                    if (state.shutter.state) 1.0f else 0.5f
                 )
                 remoteViews.setFloat(
                     R.id.status_recording,
                     "setAlpha",
-                    if (state.recording) 1.0f else 0.5f
+                    if (state.recording.state) 1.0f else 0.5f
                 )
                 buttonIDs.forEachIndexed { index, buttonID ->
                     customButtons?.getOrNull(index)?.also { cameraAction ->

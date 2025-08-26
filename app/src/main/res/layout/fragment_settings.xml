@@ -56,6 +56,13 @@
             android:visibility="@{viewModel.uiState.cameraState != SettingsUICameraState.NOT_ASSOCIATED &amp;&amp; !viewModel.uiState.bluetoothPermissionGranted ? View.VISIBLE : View.GONE}"
             android:text="@string/settings_missing_bluetooth_permission_warning" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorSecondary"
+            android:text="@string/settings_location_service_disabled"
+            android:visibility="@{viewModel.uiState.locationServiceEnabled ? View.GONE : View.VISIBLE}" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,6 +108,14 @@
             android:textColor="?attr/colorError"
             android:text="@string/settings_bluetooth_disabled"
             android:visibility="@{!viewModel.uiState.bluetoothEnabled ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorError"
+            android:text="@string/settings_ble_scanning_disabled"
+            android:visibility="@{!viewModel.uiState.bleScanningEnabled ? View.VISIBLE : View.GONE}" />
+
 
         <TextView
             android:layout_width="match_parent"

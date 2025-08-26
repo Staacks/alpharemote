@@ -1,13 +1,17 @@
 package org.staacks.alpharemote.ui.settings
 
+import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanFilter
 import android.companion.AssociationRequest
 import android.companion.BluetoothLeDeviceFilter
 import android.companion.CompanionDeviceManager
+import android.companion.ObservingDevicePresenceRequest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import org.staacks.alpharemote.MainActivity
 
 //Massive thanks to coral for the documentation of the camera's BLE protocol at
@@ -83,10 +87,21 @@ object CompanionDeviceHelper {
     fun unpairCompanionDevice(context: Context) {
         val deviceManager = context.getSystemService(Context.COMPANION_DEVICE_SERVICE) as CompanionDeviceManager
 
-        for (address in deviceManager.associations) {
-            Log.d(MainActivity.TAG, "Disassociating $address.")
-            deviceManager.stopObservingDevicePresence(address)
-            deviceManager.disassociate(address)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            for (association in deviceManager.myAssociations) {
+                Log.d(MainActivity.TAG, "Disassociating ${association.deviceMacAddress}.")
+                val request = ObservingDevicePresenceRequest.Builder().setAssociationId(association.id).build()
+                deviceManager.stopObservingDevicePresence(request)
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED)
+                    deviceManager.removeBond(association.id)
+                deviceManager.disassociate(association.id)
+            }
+        } else {
+            for (address in deviceManager.associations) {
+                Log.d(MainActivity.TAG, "Disassociating $address.")
+                deviceManager.stopObservingDevicePresence(address)
+                deviceManager.disassociate(address)
+            }
         }
     }
 }

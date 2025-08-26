@@ -17,10 +17,12 @@
     <string name="camera_advanced_bulb_title">Timer for bulb mode</string>
     <string name="camera_advanced_bulb_duration">Duration</string>
     <string name="camera_advanced_bulb_timer_label">Bulb</string>
+    <string name="camera_advanced_bulb_note">You need to manually set your camera to bulb mode for this feature.</string>
     <string name="camera_advanced_interval_title">Intervalometer</string>
     <string name="camera_advanced_interval_duration">Interval</string>
     <string name="camera_advanced_interval_count">Number of exposures</string>
     <string name="camera_advanced_interval_timer_label">Interval</string>
+    <string name="camera_advanced_pending_triggers">%1$d remaining</string>
     <string name="camera_advanced_start">Start</string>
     <string name="camera_advanced_abort">Abort</string>
 
@@ -28,6 +30,8 @@
     <string name="permission_notification_rationale">If you want to control your camera from the notification area, you need to allow this app to show notifications.</string>
 
     <string name="settings_bluetooth_disabled">Bluetooth is currently disabled. Please turn on Bluetooth to use this app.</string>
+    <string name="settings_location_service_disabled">Location Services are currently disabled. This might not be an issue on some devices, but if you cannot connect to your camera, please try enabling Location Services in your Android settings.</string>
+    <string name="settings_ble_scanning_disabled">Bluetooth scanning is currently disabled, which will very likely prevent your phone from detecting the camera. Please check for \"Bluetooth Scanning\" within \"Location Services\" of your Android settings.</string>
 
     <string name="settings_missing_permission_title">Permission required</string>
     <string name="settings_missing_notification_permission_warning">Warning: The app needs permission to show notifications. Without this permission, the remote works, but the buttons will not show up in your phone\'s notification area.</string>

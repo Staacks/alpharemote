@@ -481,7 +481,7 @@ class CameraBLE(val scope: CoroutineScope, context: Context, val address: String
             val name = (cameraState.value as? CameraStateIdentified)?.name
             if (name == null)
                 Log.w(MainActivity.TAG, "Subscribe complete, but camera in unidentified state.")
-            _cameraState.value = CameraStateReady(name, focus = false, shutter = false, recording = false, emptySet(), emptySet(), null, null)
+            _cameraState.value = CameraStateReady(name, focus = ReportedBoolean(), shutter = ReportedBoolean(), recording = ReportedBoolean(), emptySet(), emptySet(), null, null)
             operationComplete()
         }
     }
@@ -492,13 +492,13 @@ class CameraBLE(val scope: CoroutineScope, context: Context, val address: String
             if (it is CameraStateRemoteDisabled || it is CameraStateReady) {
                 val state = if (it is CameraStateRemoteDisabled)
                     // The remote disabled state is the consequence of a failed write. This might be recoverable (i.e. user turned on the remote feature), so let's start with a fresh ready state.
-                    CameraStateReady(name, focus = false, shutter = false, recording = false, emptySet(), emptySet(), null, null)
+                    CameraStateReady(name, focus = ReportedBoolean(), shutter = ReportedBoolean(), recording = ReportedBoolean(), emptySet(), emptySet(), null, null)
                 else
                     it as CameraStateReady
                 when (value[1]) {
-                    0x3f.toByte() -> state.copy(focus = (value[2].and(0x20.toByte()) != 0.toByte()))
-                    0xa0.toByte() -> state.copy(shutter = (value[2].and(0x20.toByte()) != 0.toByte()))
-                    0xd5.toByte() -> state.copy(focus = (value[2].and(0x20.toByte()) != 0.toByte()))
+                    0x3f.toByte() -> state.copy(focus = ReportedBoolean(value[2].and(0x20.toByte()) != 0.toByte()))
+                    0xa0.toByte() -> state.copy(shutter = ReportedBoolean(value[2].and(0x20.toByte()) != 0.toByte()))
+                    0xd5.toByte() -> state.copy(recording = ReportedBoolean(value[2].and(0x20.toByte()) != 0.toByte()))
                     else -> state
                 }
             } else // This should not happen. If it happens, it is probably the result of the BLE communication running in parallel to whatever changed the state. In this case it is probably not recoverable and should be ignored

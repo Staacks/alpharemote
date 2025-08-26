@@ -1,5 +1,6 @@
 package org.staacks.alpharemote.ui.camera
 
+import android.animation.LayoutTransition
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -42,6 +43,7 @@ import org.staacks.alpharemote.service.AlphaRemoteService
 import org.staacks.alpharemote.service.ServiceRunning
 import org.staacks.alpharemote.ui.help.HelpDialogFragment
 import java.io.Serializable
+import kotlin.concurrent.timer
 
 
 class CameraFragment : Fragment() {
@@ -69,8 +71,7 @@ class CameraFragment : Fragment() {
                                     R.string.help_camera_remote_title,
                                     R.string.help_camera_remote_text
                                 ).show(childFragmentManager, null)
-                            CameraViewModel.GenericCameraUIActionType.START_BULB -> startBulb()
-                            CameraViewModel.GenericCameraUIActionType.START_INTERVAL -> startInterval()
+                            CameraViewModel.GenericCameraUIActionType.START_ADVANCED_SEQUENCE -> startAdvancedSequence()
                         }
                     }
                     is CameraViewModel.DefaultRemoteButtonCameraUIAction -> {
@@ -120,6 +121,16 @@ class CameraFragment : Fragment() {
                 state.serviceState?.countdown?.let {
                     binding.statusCountdown.base = it
                     binding.statusCountdown.start()
+                }
+                state.cameraState?.recording?.let {
+                    if (it.state) {
+                        it.lastChange?.let { time ->
+                            binding.statusRecordingTime.base = time
+                            binding.statusRecordingTime.start()
+                        }
+                    } else {
+                        binding.statusRecordingTime.stop()
+                    }
                 }
                 state.cameraState?.let {
                     binding.defaultRemote.buttonAfOn.updateCameraState(it)
@@ -273,42 +284,23 @@ class CameraFragment : Fragment() {
         (activity as MainActivity).navigateTo(R.id.navigation_settings)
     }
 
-    private fun startBulb() {
+    private fun startAdvancedSequence() {
         if (AlphaRemoteService.serviceState.value !is ServiceRunning)
             return
 
-        try {
-            _binding?.advancedControls?.bulbDuration?.text?.toString()?.toFloat()?.let { duration ->
-                val intent = Intent(context, AlphaRemoteService::class.java).apply {
-                    action = AlphaRemoteService.BULB_INTENT_ACTION
-                    putExtra(AlphaRemoteService.BULB_INTENT_DURATION_EXTRA, duration)
-                }
-                context?.startService(intent)
-            }
-        } catch (_: NumberFormatException) {
-            sendCameraActionToService(CameraAction(toggle = false, null, null, null, CameraActionPreset.STOP), null)
-            Log.w(MainActivity.TAG, "Bulb could not be started due to bad parameters.")
-        }
-    }
+        cameraViewModel?.uiState?.value?.let { uiState ->
+            val bulbDuration = if (uiState.bulbToggle.get() == true) {uiState.bulbDuration ?: 0.0} else {0.0}
+            val intervalCount = if (uiState.intervalToggle.get() == true) {uiState.intervalCount ?: 1} else {1}
+            val intervalDuration = if (uiState.intervalToggle.get() == true) {uiState.intervalDuration ?: 0.0} else {0.0}
 
-    private fun startInterval() {
-        if (AlphaRemoteService.serviceState.value !is ServiceRunning)
-            return
-
-        try {
-            _binding?.advancedControls?.intervalDuration?.text?.toString()?.toFloat()?.let { duration ->
-                _binding?.advancedControls?.intervalCount?.text?.toString()?.toInt()?.let { count ->
-                    val intent = Intent(context, AlphaRemoteService::class.java).apply {
-                        action = AlphaRemoteService.INTERVAL_INTENT_ACTION
-                        putExtra(AlphaRemoteService.INTERVAL_INTENT_DURATION_EXTRA, duration)
-                        putExtra(AlphaRemoteService.INTERVAL_INTENT_COUNT_EXTRA, count)
-                    }
-                    context?.startService(intent)
-                }
+            val intent = Intent(context, AlphaRemoteService::class.java).apply {
+                action = AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_ACTION
+                putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_BULB_DURATION_EXTRA, bulbDuration.toFloat())
+                putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_INTERVAL_COUNT_EXTRA, intervalCount)
+                putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_INTERVAL_DURATION_EXTRA, intervalDuration.toFloat())
             }
-        } catch (_: NumberFormatException) {
-            sendCameraActionToService(CameraAction(toggle = false, null, null, null, CameraActionPreset.STOP), null)
-            Log.w(MainActivity.TAG, "Interval could not be started due to bad parameters.")
+
+            context?.startService(intent)
         }
     }
 

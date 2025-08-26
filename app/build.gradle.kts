@@ -1,18 +1,19 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
 }
 
 android {
     namespace = "org.staacks.alpharemote"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "org.staacks.alpharemote"
         minSdk = 31
-        targetSdk = 35
-        versionCode = 1000
-        versionName = "1.00"
+        targetSdk = 36
+        versionCode = 10100 //xyyzz -> x.y and z for subversions like betas if required.
+        versionName = "1.1-beta1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
