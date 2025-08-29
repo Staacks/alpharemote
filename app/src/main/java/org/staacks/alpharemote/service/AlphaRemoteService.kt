@@ -3,31 +3,21 @@ package org.staacks.alpharemote.service
 import android.Manifest
 import android.annotation.SuppressLint
 import android.companion.AssociationInfo
-import android.companion.CompanionDeviceManager
 import android.companion.CompanionDeviceService
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.content.res.Configuration
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.location.LocationRequest
+import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import org.staacks.alpharemote.MainActivity
-import org.staacks.alpharemote.R
-import org.staacks.alpharemote.SettingsStore
-import org.staacks.alpharemote.camera.ButtonCode
-import org.staacks.alpharemote.camera.CAButton
-import org.staacks.alpharemote.camera.CACountdown
-import org.staacks.alpharemote.camera.CAJog
-import org.staacks.alpharemote.camera.CAWaitFor
-import org.staacks.alpharemote.camera.CameraAction
-import org.staacks.alpharemote.camera.CameraActionStep
-import org.staacks.alpharemote.camera.CameraBLE
-import org.staacks.alpharemote.camera.CameraStateIdentified
-import org.staacks.alpharemote.camera.CameraStateReady
-import org.staacks.alpharemote.camera.WaitTarget
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -40,8 +30,21 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.staacks.alpharemote.MainActivity
+import org.staacks.alpharemote.R
+import org.staacks.alpharemote.SettingsStore
+import org.staacks.alpharemote.camera.ButtonCode
+import org.staacks.alpharemote.camera.CAButton
+import org.staacks.alpharemote.camera.CACountdown
+import org.staacks.alpharemote.camera.CAJog
+import org.staacks.alpharemote.camera.CAWaitFor
+import org.staacks.alpharemote.camera.CameraAction
 import org.staacks.alpharemote.camera.CameraActionPreset
-import org.staacks.alpharemote.ui.settings.CompanionDeviceHelper
+import org.staacks.alpharemote.camera.CameraActionStep
+import org.staacks.alpharemote.camera.CameraBLE
+import org.staacks.alpharemote.camera.CameraStateIdentified
+import org.staacks.alpharemote.camera.CameraStateReady
+import org.staacks.alpharemote.camera.WaitTarget
 import java.util.LinkedList
 import java.util.Timer
 import java.util.TimerTask
@@ -56,6 +59,7 @@ class AlphaRemoteService : CompanionDeviceService() {
     private var timer: TimerTask? = null
     private var notificationUI: NotificationUI? = null
 
+    private var locationManager: LocationManager? = null
     private lateinit var pendingActionsWakeLock: PowerManager.WakeLock
 
     companion object {
@@ -84,6 +88,8 @@ class AlphaRemoteService : CompanionDeviceService() {
         var broadcastControl = false
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java")
     override fun onDeviceAppeared(address: String) {
         Log.d(MainActivity.TAG, "Device appeared: $address")
         try {
@@ -159,6 +165,8 @@ class AlphaRemoteService : CompanionDeviceService() {
         Log.d(MainActivity.TAG, "API33 onDeviceAppeared: $associationInfo")
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java")
     override fun onDeviceDisappeared(address: String) {
         Log.d(MainActivity.TAG, "Device disappeared: $address")
         try {
@@ -191,10 +199,12 @@ class AlphaRemoteService : CompanionDeviceService() {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
             )
         }
+        startLocationUpdates()
     }
 
     private fun onDisconnect() {
         Log.d(MainActivity.TAG, "onDisconnect")
+        stopLocationUpdates()
         _serviceState.value = ServiceStateGone()
         cancelPendingActionSteps()
         stopForeground(STOP_FOREGROUND_REMOVE)
@@ -225,6 +235,7 @@ class AlphaRemoteService : CompanionDeviceService() {
             startCameraAction(cameraAction.getReleaseStepList())
     }
 
+    @Suppress("DEPRECATION")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(MainActivity.TAG, "onStartCommand: $intent")
         when (intent?.action) {
@@ -404,4 +415,40 @@ class AlphaRemoteService : CompanionDeviceService() {
         }
     }
 
+    fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.w(MainActivity.TAG, "Start location updates: Location permission not granted")
+            return
+        }
+        Log.d(MainActivity.TAG, "Start location updates")
+        if (locationManager == null) {
+            locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        }
+        val request = LocationRequest.Builder(10000L)
+            .setMinUpdateIntervalMillis(10000L)
+            .build()
+        locationManager?.requestLocationUpdates(
+            LocationManager.FUSED_PROVIDER,
+            request,
+            ContextCompat.getMainExecutor(this),
+            locationListener
+        )
+    }
+
+    fun stopLocationUpdates() {
+        Log.d(MainActivity.TAG, "Stop location updates")
+        locationManager?.removeUpdates(locationListener)
+    }
+
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            Log.d(MainActivity.TAG, "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+            cameraBLE?.sendLocation(location)
+        }
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+        override fun onProviderEnabled(provider: String) {}
+        override fun onProviderDisabled(provider: String) {}
+    }
 }

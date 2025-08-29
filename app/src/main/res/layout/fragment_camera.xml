@@ -66,9 +66,11 @@
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"
                 android:visibility="@{viewModel.uiState.connected ? View.VISIBLE : View.GONE}"
-                >
+                tools:layout_editor_absoluteX="4dp"
+                tools:layout_editor_absoluteY="4dp">
 
             <Button
+                android:id="@+id/button11"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,6 +98,34 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:maxLines="1"
                 />
+
+            <TextView
+                android:id="@+id/status_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:maxLines="1"
+                android:text="@{viewModel.uiState.cameraState.batteryStatus == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.batteryStatus.description}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:visibility="@{viewModel.uiState.cameraState.batteryStatus == null ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintEnd_toStartOf="@+id/status_media"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/status_name"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/status_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:maxLines="1"
+                android:text="@{viewModel.uiState.cameraState.mediaStatus == null ? @string/settings_camera_unknown_name : viewModel.uiState.cameraState.mediaStatus.description}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:visibility="@{viewModel.uiState.cameraState.mediaStatus == null ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintEnd_toStartOf="@+id/button11"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/status_battery"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/status_focus"

@@ -97,6 +97,7 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
                     SettingsViewModel.SettingsUIAction.UNPAIR -> unpair()
                     SettingsViewModel.SettingsUIAction.REQUEST_BLUETOOTH_PERMISSION -> requestBluetoothPermission(bluetoothRequestPermissionLauncher, true)
                     SettingsViewModel.SettingsUIAction.REQUEST_NOTIFICATION_PERMISSION -> requestNotificationPermission(true)
+                    SettingsViewModel.SettingsUIAction.REQUEST_LOCATION_PERMISSION -> requestLocationPermission()
                     SettingsViewModel.SettingsUIAction.ADD_CUSTOM_BUTTON -> addCustomButton()
                     SettingsViewModel.SettingsUIAction.HELP_CONNECTION ->
                         HelpDialogFragment().setContent(
@@ -261,6 +262,10 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
                 .create()
                 .show()
         }
+    }
+
+    private fun requestLocationPermission() {
+        // TODO
     }
 
     private val bluetoothRequestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
