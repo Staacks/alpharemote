@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanResult
 import android.companion.CompanionDeviceManager
 import android.content.BroadcastReceiver
@@ -299,7 +300,8 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
         val address = CompanionDeviceHelper.getAssociation(requireContext()).firstOrNull()
         val isAssociated = address != null
         val isBonded = isAssociated && try {
-            BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address).bondState == BluetoothDevice.BOND_BONDED
+            val adapter = ContextCompat.getSystemService(requireContext(), BluetoothManager::class.java)?.adapter
+            adapter?.getRemoteDevice(address)?.bondState == BluetoothDevice.BOND_BONDED
         } catch (_: SecurityException) {
             false
         }
@@ -308,7 +310,8 @@ class SettingsFragment : Fragment(), CustomButtonListEventReceiver, CameraAction
     }
 
     private fun checkBluetoothState() {
-        val enabled = BluetoothAdapter.getDefaultAdapter().state == BluetoothAdapter.STATE_ON
+        val adapter = ContextCompat.getSystemService(requireContext(), BluetoothManager::class.java)?.adapter
+        val enabled = adapter?.state == BluetoothAdapter.STATE_ON
         binding.viewModel?.updateBluetoothState(enabled)
     }
 

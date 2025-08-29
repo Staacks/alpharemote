@@ -12,7 +12,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import org.staacks.alpharemote.MainActivity
+import org.staacks.alpharemote.utils.hasBluetoothPermission
 
 //Massive thanks to coral for the documentation of the camera's BLE protocol at
 // https://github.com/coral/freemote
@@ -70,7 +72,7 @@ object CompanionDeviceHelper {
         try {
             device.createBond()
             if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_COMPANION_DEVICE_SETUP)) {
-                (context.getSystemService(Context.COMPANION_DEVICE_SERVICE) as CompanionDeviceManager).startObservingDevicePresence(
+                ContextCompat.getSystemService(context,CompanionDeviceManager::class.java)?.startObservingDevicePresence(
                     device.address
                 )
                 return true
@@ -91,7 +93,7 @@ object CompanionDeviceHelper {
                 Log.d(MainActivity.TAG, "Disassociating ${association.deviceMacAddress}.")
                 val request = ObservingDevicePresenceRequest.Builder().setAssociationId(association.id).build()
                 deviceManager.stopObservingDevicePresence(request)
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED)
+                if (hasBluetoothPermission(context))
                     deviceManager.removeBond(association.id)
                 deviceManager.disassociate(association.id)
             }

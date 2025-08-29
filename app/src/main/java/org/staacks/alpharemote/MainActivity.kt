@@ -39,12 +39,9 @@ class MainActivity : AppCompatActivity() {
         navigateTo(startPage)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
-        intent?.getIntExtra(NAVIGATE_TO_INTENT_EXTRA, R.id.navigation_camera)?.let {
-            navigateTo(it)
-        }
+        navigateTo(intent.getIntExtra(NAVIGATE_TO_INTENT_EXTRA, R.id.navigation_camera))
     }
 
     fun navigateTo(id: Int) {

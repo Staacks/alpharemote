@@ -16,6 +16,7 @@ class CameraBroadcastReceiver : BroadcastReceiver() {
         Log.d(MainActivity.TAG, "BroadcastReceiver received: $intent")
 
         val settings = SettingsStore(context)
+
         if (!settings.handleExternalBroadcastMessage) {
             Log.w(MainActivity.TAG, "Broadcast control not allowed by user.")
             return

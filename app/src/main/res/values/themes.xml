@@ -2,22 +2,22 @@
     <!-- Base application theme. -->
     <style name="Theme.BluetoothRemoteForSonyCameras" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/midnight_light</item>
+        <item name="colorPrimary">@color/cyan</item>
         <item name="colorPrimaryVariant">@color/midnight</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/fulvous</item>
-        <item name="colorSecondaryVariant">@color/ochre</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/fulvous</item>
+        <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 
-        <item name="colorTextError">@color/dark_red</item>
-        <item name="colorTextConnected">@color/dark_green</item>
+        <item name="colorTextError">@color/light_red</item>
+        <item name="colorTextConnected">@color/light_green</item>
 
-        <item name="colorCustomButton">@color/black</item>
-        <item name="colorCustomButtonBG">@color/gray95</item>
-        <item name="colorZoomFocusBG">@color/gray95</item>
+        <item name="colorCustomButton">@color/white</item>
+        <item name="colorCustomButtonBG">@color/gray10</item>
+        <item name="colorZoomFocusBG">@color/gray20</item>
 
         <!-- Workaround for drag handle in Material 2 theme, https://stackoverflow.com/a/75389707/8068814 -->
         <item name="bottomSheetDragHandleStyle">@style/Widget.MaterialComponents.BottomSheet.DragHandle</item>
