@@ -1,0 +1,8 @@
+- Combine bulb and intervalometer function
+- Show remaining exposures for intervalometer
+- Show video recording duration in the app
+- Allow setting a duration for the trigger-on-focus trigger (relevant for bracketing shots)
+- Fix: Recording state wrongly mapped to focus state
+- Add warning if location service or Bluetooth scanning is disabled.
+- Fix: Standby blocks intervalometer
+- On Android 16 removing a camera will automatically unpair it.

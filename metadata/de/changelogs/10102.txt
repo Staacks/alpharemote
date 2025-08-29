@@ -1,0 +1,8 @@
+- Bulb und Intervallauslöser zusammengeführt
+- Verbleibende Aufnahmen für Intervallauslöser anzeigen
+- Videoaufnahmedauer in App anzeigen
+- Fokus-Auslöser kann nun eine Dauer haben (relevant für Bracketing)
+- Fix: Aufnahmezustand wurde als Fokus angezeigt
+- Warnung anzeigen, wenn Standortdienste oder Bluetooth-Scanning deaktiviert sind
+- Fix: Standby blockiert Intervalometer
+- Unter Android 16 wird beim Entfernen einer Kamera die Kopplung aufgehoben
