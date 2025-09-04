@@ -81,7 +81,6 @@ class AlphaRemoteService : CompanionDeviceService() {
         const val ADVANCED_SEQUENCE_INTENT_INTERVAL_COUNT_EXTRA = "count"
 
         private var pendingActionSteps = LinkedList<CameraActionStep>()
-        var broadcastControl = false
     }
 
     override fun onDeviceAppeared(address: String) {
@@ -116,7 +115,6 @@ class AlphaRemoteService : CompanionDeviceService() {
                 settingsStore.permissions.collectLatest {
                     if (it.notification) //Refresh notification if notification permission has been granted after it was not granted previously
                         notificationUI.updateNotification()
-                    broadcastControl = it.broadcastControl
                 }
             }
         })

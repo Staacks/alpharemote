@@ -100,7 +100,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             }
             customButtonListFlow.value = customButtonList
 
-            broadcastControl.value = settingsStore.getBroadcastControl()
+            broadcastControl.value = settingsStore.getEnableExternalBroadcastControl()
 
             customButtonListFlow.collect{
                 it?.let {
@@ -260,7 +260,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setBroadcastControl(button: CompoundButton, isChecked: Boolean) {
         viewModelScope.launch {
             broadcastControl.value = isChecked
-            settingsStore.setBroadcastControl(isChecked)
+            settingsStore.setEnableExternalBroadcastControl(isChecked)
         }
     }
 }
