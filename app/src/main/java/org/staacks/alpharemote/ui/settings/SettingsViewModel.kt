@@ -76,6 +76,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val buttonScaleSteps = listOf(0.6f, 0.7f, 0.85f, 1.0f, 1.15f, 1.3f, 1.5f)
     var buttonScaleIndex = MutableStateFlow(buttonScaleSteps.indexOf(1.0f))
     var broadcastControl = MutableStateFlow(false)
+    var keepScreenOn = MutableStateFlow(false)
 
     val customButtonListFlow = MutableStateFlow<List<CameraAction>?>(null)
 
@@ -101,6 +102,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             customButtonListFlow.value = customButtonList
 
             broadcastControl.value = settingsStore.getBroadcastControl()
+            keepScreenOn.value = settingsStore.getKeepScreenOn()
 
             customButtonListFlow.collect{
                 it?.let {
@@ -261,6 +263,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             broadcastControl.value = isChecked
             settingsStore.setBroadcastControl(isChecked)
+        }
+    }
+
+    fun setKeepScreenOn(button: CompoundButton, isChecked: Boolean) {
+        viewModelScope.launch {
+            keepScreenOn.value = isChecked
+            settingsStore.setKeepScreenOn(isChecked)
         }
     }
 }

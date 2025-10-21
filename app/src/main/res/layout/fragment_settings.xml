@@ -387,6 +387,31 @@
             >
         </Button>
 
+                <!-- Keep screen on -->
+
+        <TextView
+            android:id="@+id/keep_screen_on_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/headline_margin_bottom"
+            android:layout_marginTop="@dimen/headline_margin_top"
+            android:text="@string/settings_keep_screen_on"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_keep_screen_on_explanation"
+            />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_keep_screen_on_toggle"
+            android:checked="@{viewModel.keepScreenOn}"
+            android:onCheckedChanged="@{viewModel::setKeepScreenOn}"
+            />
+
     </LinearLayout>
 
 </ScrollView>
