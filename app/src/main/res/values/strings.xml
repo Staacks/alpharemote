@@ -72,6 +72,10 @@
     <string name="settings_broadcast_control_more_url">https://there.oughta.be/a/bluetooth-remote#intents</string>
     <string name="settings_broadcast_control_toggle">Allow broadcast control</string>
 
+    <string name="settings_keep_screen_on">Keep Screen On</string>
+    <string name="settings_keep_screen_on_explanation">Prevent the screen from turning off while the app is in the foreground.</string>
+    <string name="settings_keep_screen_on_toggle">Keep screen on</string>
+
     <string name="about_author_title">Author</string>
     <string name="about_author_text">This app has been created by Sebastian Staacks. You can find out more about me and my projects in my blog "there.oughta.be" or its accompanying Youtube channel.</string>
     <string name="about_blog_label">Blog</string>

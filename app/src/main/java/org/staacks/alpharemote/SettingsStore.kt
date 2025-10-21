@@ -27,6 +27,8 @@ class SettingsStore(context: Context) {
     private val notificationGrantedKey = booleanPreferencesKey("notificationGranted")
     private val bluetoothGrantedKey = booleanPreferencesKey("bluetoothGranted")
 
+    private val keepScreenOnKey = booleanPreferencesKey("keepScreenOn")
+
     private val cameraIdNameKey = stringPreferencesKey("cameraIdName")
     private val cameraIdAddressKey = stringPreferencesKey("cameraIdAddress")
     private val notificationButtonSizeKey = floatPreferencesKey("notificationButtonSize")
@@ -74,17 +76,29 @@ class SettingsStore(context: Context) {
         }
     }
 
+    suspend fun setKeepScreenOn(enabled: Boolean) {
+        settings.edit { data ->
+            data[keepScreenOnKey] = enabled
+        }
+    }
+
+    suspend fun getKeepScreenOn(): Boolean {
+        return settings.data.firstOrNull()?.get(keepScreenOnKey) ?: false
+    }
+
     data class Permissions (
         val bluetooth: Boolean,
         val notification: Boolean,
-        val broadcastControl: Boolean
+        val broadcastControl: Boolean,
+        val keepScreenOn: Boolean
     )
 
     val permissions: Flow<Permissions> = settings.data.map{
         Permissions(
             it[bluetoothGrantedKey] ?: false,
             it[notificationGrantedKey] ?: false,
-            it[broadcastControlKey] ?: false
+            it[broadcastControlKey] ?: false,
+            it[keepScreenOnKey] ?: false
         )
     }.distinctUntilChanged()
 

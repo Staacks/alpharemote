@@ -8,10 +8,15 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.staacks.alpharemote.databinding.ActivityMainBinding
+import android.view.WindowManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var settingsStore: SettingsStore
 
     companion object {
         const val NAVIGATE_TO_INTENT_EXTRA = "nav_to"
@@ -26,6 +31,17 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        settingsStore = SettingsStore(this)
+        lifecycleScope.launch {
+            settingsStore.permissions.collectLatest { permissions ->
+                if (permissions.keepScreenOn) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+        }
 
         val navView: BottomNavigationView = binding.navView
 
