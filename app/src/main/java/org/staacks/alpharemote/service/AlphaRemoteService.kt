@@ -84,6 +84,13 @@ class AlphaRemoteService : CompanionDeviceService() {
         var broadcastControl = false
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        pendingActionsWakeLock = (getSystemService(POWER_SERVICE) as PowerManager).run {
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AlphaRemoteService::PendingActionsWakeLock")
+        }
+    }
+
     override fun onDeviceAppeared(address: String) {
         Log.d(MainActivity.TAG, "Device appeared: $address")
         try {
@@ -120,10 +127,6 @@ class AlphaRemoteService : CompanionDeviceService() {
                 }
             }
         })
-
-        pendingActionsWakeLock = (getSystemService(POWER_SERVICE) as PowerManager).run {
-            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AlphaRemoteService::PendingActionsWakeLock")
-        }
 
         if (cameraBLE == null) {
             cancelPendingActionSteps()
