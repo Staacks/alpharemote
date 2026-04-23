@@ -33,6 +33,8 @@ class CameraViewModel : ViewModel() {
         var intervalToggle: ObservableField<Boolean> = ObservableField(false),
         var intervalCount: Int? = 50,
         var intervalDuration: Double? = 3.0,
+        var focusBracketingToggle: ObservableField<Boolean> = ObservableField(false),
+        var focusBracketingAmount: Double? = 3.0,
     )
 
     sealed class CameraUIAction

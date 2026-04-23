@@ -10,7 +10,8 @@ data class CACountdown (
 ) : CameraActionStep()
 
 data class CAWaitFor (
-    val target: WaitTarget
+    val target: WaitTarget,
+    val invert: Boolean = false
 ) : CameraActionStep()
 
 data class CAButton (

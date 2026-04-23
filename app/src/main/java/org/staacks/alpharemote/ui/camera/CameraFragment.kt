@@ -292,12 +292,14 @@ class CameraFragment : Fragment() {
             val bulbDuration = if (uiState.bulbToggle.get() == true) {uiState.bulbDuration ?: 0.0} else {0.0}
             val intervalCount = if (uiState.intervalToggle.get() == true) {uiState.intervalCount ?: 1} else {1}
             val intervalDuration = if (uiState.intervalToggle.get() == true) {uiState.intervalDuration ?: 0.0} else {0.0}
+            val focusBracketingAmount = if (uiState.focusBracketingToggle.get() == true) {uiState.focusBracketingAmount ?: 0.0} else {0.0}
 
             val intent = Intent(context, AlphaRemoteService::class.java).apply {
                 action = AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_ACTION
                 putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_BULB_DURATION_EXTRA, bulbDuration.toFloat())
                 putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_INTERVAL_COUNT_EXTRA, intervalCount)
                 putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_INTERVAL_DURATION_EXTRA, intervalDuration.toFloat())
+                putExtra(AlphaRemoteService.ADVANCED_SEQUENCE_INTENT_FOCUS_BRACKETING_AMOUNT_EXTRA, focusBracketingAmount.toFloat())
             }
 
             context?.startService(intent)

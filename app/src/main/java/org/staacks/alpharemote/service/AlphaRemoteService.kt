@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.staacks.alpharemote.camera.CameraActionPreset
+import org.staacks.alpharemote.camera.JogCode
 import org.staacks.alpharemote.ui.settings.CompanionDeviceHelper
 import java.util.LinkedList
 import java.util.Timer
@@ -79,6 +80,7 @@ class AlphaRemoteService : CompanionDeviceService() {
         const val ADVANCED_SEQUENCE_INTENT_BULB_DURATION_EXTRA = "duration"
         const val ADVANCED_SEQUENCE_INTENT_INTERVAL_DURATION_EXTRA = "interval"
         const val ADVANCED_SEQUENCE_INTENT_INTERVAL_COUNT_EXTRA = "count"
+        const val ADVANCED_SEQUENCE_INTENT_FOCUS_BRACKETING_AMOUNT_EXTRA = "focus_step"
 
         private var pendingActionSteps = LinkedList<CameraActionStep>()
         var broadcastControl = false
@@ -242,6 +244,7 @@ class AlphaRemoteService : CompanionDeviceService() {
                 val bulbDuration = intent.getSerializableExtra(ADVANCED_SEQUENCE_INTENT_BULB_DURATION_EXTRA) as Float
                 val intervalDuration = intent.getSerializableExtra(ADVANCED_SEQUENCE_INTENT_INTERVAL_DURATION_EXTRA) as Float
                 val intervalCount = intent.getSerializableExtra(ADVANCED_SEQUENCE_INTENT_INTERVAL_COUNT_EXTRA) as Int
+                val focusBracketingAmount = intent.getSerializableExtra(ADVANCED_SEQUENCE_INTENT_FOCUS_BRACKETING_AMOUNT_EXTRA) as Float
 
                 val stepSequence: MutableList<CameraActionStep> = mutableListOf()
                 stepSequence += CAButton(pressed = true, ButtonCode.SHUTTER_HALF)
@@ -261,6 +264,16 @@ class AlphaRemoteService : CompanionDeviceService() {
                         CAButton(pressed = true, ButtonCode.SHUTTER_FULL),
                         CAButton(pressed = false, ButtonCode.SHUTTER_FULL),
                         CAButton(pressed = false, ButtonCode.SHUTTER_HALF),
+                    )
+                }
+                if (focusBracketingAmount > 0) {
+                    stepSequence += listOf(
+                        CAWaitFor(WaitTarget.SHUTTER, true), //Wait for the exposure to finish
+                        CAButton(pressed = true, ButtonCode.SHUTTER_HALF), //Dismiss immediate preview by half pressing shutter
+                        CAButton(pressed = false, ButtonCode.SHUTTER_HALF),
+                        CAJog(true, JogCode.FOCUS_FAR.maxStep, JogCode.FOCUS_FAR),
+                        CACountdown(getString(R.string.camera_advanced_focus_bracketing_timer_label), focusBracketingAmount),
+                        CAJog(false, JogCode.FOCUS_FAR.maxStep, JogCode.FOCUS_FAR)
                     )
                 }
 
@@ -391,15 +404,15 @@ class AlphaRemoteService : CompanionDeviceService() {
         val nextAction = pendingActionSteps.peek()
         if (nextAction is CAWaitFor) {
             when (nextAction.target) {
-                WaitTarget.FOCUS -> if (state.focus.state) {
+                WaitTarget.FOCUS -> if (state.focus.state != nextAction.invert) {
                     pendingActionSteps.removeFirst()
                     executeNextCameraActionStep()
                 }
-                WaitTarget.SHUTTER -> if (state.shutter.state) {
+                WaitTarget.SHUTTER -> if (state.shutter.state != nextAction.invert) {
                     pendingActionSteps.removeFirst()
                     executeNextCameraActionStep()
                 }
-                WaitTarget.RECORDING -> if (state.shutter.state) {
+                WaitTarget.RECORDING -> if (state.shutter.state != nextAction.invert) {
                     pendingActionSteps.removeFirst()
                     executeNextCameraActionStep()
                 }

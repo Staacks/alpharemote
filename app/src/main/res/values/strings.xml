@@ -17,11 +17,15 @@
     <string name="camera_advanced_bulb_title">Timer for bulb mode</string>
     <string name="camera_advanced_bulb_duration">Duration</string>
     <string name="camera_advanced_bulb_timer_label">Bulb</string>
-    <string name="camera_advanced_bulb_note">You need to manually set your camera to bulb mode for this feature.</string>
+    <string name="camera_advanced_bulb_note">You need to set your camera to bulb mode for this feature.</string>
     <string name="camera_advanced_interval_title">Intervalometer</string>
     <string name="camera_advanced_interval_duration">Interval</string>
     <string name="camera_advanced_interval_count">Number of exposures</string>
     <string name="camera_advanced_interval_timer_label">Interval</string>
+    <string name="camera_advanced_focus_bracketing_title">Focus Bracketing</string>
+    <string name="camera_advanced_focus_bracketing_step_duration">Focus drive duration</string>
+    <string name="camera_advanced_focus_bracketing_note">You need to switch to manual focus for this feature.</string>
+    <string name="camera_advanced_focus_bracketing_timer_label">Focus</string>
     <string name="camera_advanced_pending_triggers">%1$d remaining</string>
     <string name="camera_advanced_start">Start</string>
     <string name="camera_advanced_abort">Abort</string>
