@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/camera_advanced_bulb_title"
                     android:layout_marginStart="16dp"
-                    android:checked="@={viewModel.uiState.bulbToggle}"
+                    android:checked="@={viewModel.bulbToggle}"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/bulb_icon"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/camera_advanced_bulb_duration"
-                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.bulbToggle ? 1.0f : 0.5f}"
                     app:layout_constraintTop_toTopOf="@id/bulb_duration"
                     app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
                     app:layout_constraintStart_toStartOf="@id/bulb_toggle"
@@ -113,8 +113,9 @@
                     app:layout_constraintEnd_toStartOf="@id/bulb_duration_unit"
                     app:layout_constraintTop_toBottomOf="@id/bulb_toggle"
                     android:inputType="number|numberDecimal"
-                    android:text="@={viewModel.uiState.bulbDuration}"
-                    android:enabled="@{viewModel.uiState.bulbToggle}"
+                    android:text="@={viewModel.bulbDuration}"
+                    android:enabled="@{viewModel.bulbToggle}"
+                    android:afterTextChanged="@{viewModel::onAdvancedControlsTextChanged}"
                     />
 
                 <TextView
@@ -125,7 +126,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/bulb_duration"
                     app:layout_constraintStart_toEndOf="@id/bulb_duration"
                     android:text="@string/seconds"
-                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.bulbToggle ? 1.0f : 0.5f}"
                     />
 
                 <TextView
@@ -136,7 +137,7 @@
                     app:layout_constraintTop_toBottomOf="@id/bulb_duration"
                     app:layout_constraintStart_toStartOf="@id/bulb_toggle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.bulbToggle ? 1.0f : 0.5f}"
                     />
 
                 <ImageView
@@ -158,7 +159,7 @@
                     android:text="@string/camera_advanced_interval_title"
                     app:layout_constraintStart_toStartOf="@id/bulb_toggle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:checked="@={viewModel.uiState.intervalToggle}"
+                    android:checked="@={viewModel.intervalToggle}"
                     app:layout_constraintTop_toBottomOf="@id/bulb_note"
                     android:gravity="start|center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -174,7 +175,7 @@
                     app:layout_constraintStart_toStartOf="@id/interval_toggle"
                     android:gravity="start|center_vertical"
                     android:labelFor="@id/interval_count"
-                    android:alpha="@{viewModel.uiState.intervalToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.intervalToggle ? 1.0f : 0.5f}"
                     />
 
                 <EditText
@@ -185,8 +186,9 @@
                     app:layout_constraintStart_toEndOf="@id/label_barrier"
                     app:layout_constraintTop_toBottomOf="@id/interval_toggle"
                     android:inputType="number"
-                    android:text="@={viewModel.uiState.intervalCount}"
-                    android:enabled="@{viewModel.uiState.intervalToggle}"
+                    android:text="@={viewModel.intervalCount}"
+                    android:enabled="@{viewModel.intervalToggle}"
+                    android:afterTextChanged="@{viewModel::onAdvancedControlsTextChanged}"
                     />
 
                 <TextView
@@ -194,7 +196,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/camera_advanced_interval_duration"
-                    android:alpha="@{viewModel.uiState.intervalToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.intervalToggle ? 1.0f : 0.5f}"
                     app:layout_constraintTop_toTopOf="@id/interval_duration"
                     app:layout_constraintBottom_toBottomOf="@id/interval_duration"
                     app:layout_constraintStart_toStartOf="@id/interval_toggle"
@@ -210,8 +212,9 @@
                     app:layout_constraintEnd_toStartOf="@id/interval_duration_unit"
                     app:layout_constraintTop_toBottomOf="@id/interval_count"
                     android:inputType="number|numberDecimal"
-                    android:text="@={viewModel.uiState.intervalDuration}"
-                    android:enabled="@{viewModel.uiState.intervalToggle}"
+                    android:text="@={viewModel.intervalDuration}"
+                    android:enabled="@{viewModel.intervalToggle}"
+                    android:afterTextChanged="@{viewModel::onAdvancedControlsTextChanged}"
                     />
 
                 <TextView
@@ -222,7 +225,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/interval_duration"
                     app:layout_constraintStart_toEndOf="@id/interval_duration"
                     android:text="@string/seconds"
-                    android:alpha="@{viewModel.uiState.intervalToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.intervalToggle ? 1.0f : 0.5f}"
                     />
 
 
@@ -245,7 +248,7 @@
                     android:text="@string/camera_advanced_focus_bracketing_title"
                     app:layout_constraintStart_toStartOf="@id/bulb_toggle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:checked="@={viewModel.uiState.focusBracketingToggle}"
+                    android:checked="@={viewModel.focusBracketingToggle}"
                     app:layout_constraintTop_toBottomOf="@id/interval_duration"
                     android:gravity="start|center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -261,7 +264,7 @@
                     app:layout_constraintStart_toStartOf="@id/focus_bracketing_toggle"
                     android:gravity="start|center_vertical"
                     android:labelFor="@id/focus_bracketing_amount"
-                    android:alpha="@{viewModel.uiState.focusBracketingToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.focusBracketingToggle ? 1.0f : 0.5f}"
                     />
 
                 <EditText
@@ -271,9 +274,10 @@
                     android:importantForAutofill="no"
                     app:layout_constraintStart_toEndOf="@id/label_barrier"
                     app:layout_constraintTop_toBottomOf="@id/focus_bracketing_toggle"
-                    android:inputType="number"
-                    android:text="@={viewModel.uiState.focusBracketingAmount}"
-                    android:enabled="@{viewModel.uiState.focusBracketingToggle}"
+                    android:inputType="number|numberDecimal"
+                    android:text="@={viewModel.focusBracketingAmount}"
+                    android:enabled="@{viewModel.focusBracketingToggle}"
+                    android:afterTextChanged="@{viewModel::onAdvancedControlsTextChanged}"
                     />
 
                 <TextView
@@ -284,7 +288,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/focus_bracketing_amount"
                     app:layout_constraintStart_toEndOf="@id/focus_bracketing_amount"
                     android:text="@string/seconds"
-                    android:alpha="@{viewModel.uiState.bulbToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.bulbToggle ? 1.0f : 0.5f}"
                     />
 
                 <TextView
@@ -295,7 +299,7 @@
                     app:layout_constraintTop_toBottomOf="@id/focus_bracketing_amount"
                     app:layout_constraintStart_toStartOf="@id/focus_bracketing_toggle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:alpha="@{viewModel.uiState.focusBracketingToggle ? 1.0f : 0.5f}"
+                    android:alpha="@{viewModel.focusBracketingToggle ? 1.0f : 0.5f}"
                     />
 
                 <androidx.constraintlayout.widget.Barrier
@@ -326,7 +330,7 @@
                     android:gravity="center_horizontal|center_vertical"
                     android:onClick="@{() -> viewModel.startAdvancedSequence()}"
                     android:text="@{viewModel.uiState.serviceState.countdown == null ? @string/camera_advanced_start : @string/camera_advanced_abort}"
-                    android:enabled="@{viewModel.uiState.bulbToggle || viewModel.uiState.intervalToggle}"
+                    android:enabled="@{viewModel.bulbToggle || viewModel.intervalToggle}"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

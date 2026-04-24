@@ -8,7 +8,7 @@ import androidx.databinding.InverseBindingAdapter
 @BindingAdapter("android:text")
 fun setTextFromDouble(view: TextView, value: Double?) {
     value?.let {
-        if (!it.toString().contentEquals(view.text))
+        if (!it.toString().contentEquals(view.text) && !view.isFocused)
             view.text = it.toString()
     }
 }
@@ -16,7 +16,7 @@ fun setTextFromDouble(view: TextView, value: Double?) {
 @BindingAdapter("android:text")
 fun setTextFromInteger(view: TextView, value: Int?) {
     value?.let {
-        if (!it.toString().contentEquals(view.text))
+        if (!it.toString().contentEquals(view.text) && !view.isFocused)
             view.text = it.toString()
     }
 }

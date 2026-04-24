@@ -1,13 +1,12 @@
 package org.staacks.alpharemote.ui.camera
 
+import android.app.Application
+import android.text.Editable
 import android.view.MotionEvent
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,26 +15,53 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.staacks.alpharemote.SettingsStore
 import org.staacks.alpharemote.camera.CameraStateReady
 import org.staacks.alpharemote.service.AlphaRemoteService
 import org.staacks.alpharemote.service.ServiceRunning
 
 
-class CameraViewModel : ViewModel() {
+class CameraViewModel(application: Application) : AndroidViewModel(application) {
 
     data class CameraUIState (
         var connected: Boolean = false,
         var serviceState: ServiceRunning? = null,
         var cameraState: CameraStateReady? = null,
-
-        var bulbToggle: ObservableField<Boolean> = ObservableField(false),
-        var bulbDuration: Double? = 5.0,
-        var intervalToggle: ObservableField<Boolean> = ObservableField(false),
-        var intervalCount: Int? = 50,
-        var intervalDuration: Double? = 3.0,
-        var focusBracketingToggle: ObservableField<Boolean> = ObservableField(false),
-        var focusBracketingAmount: Double? = 3.0,
     )
+
+    var bulbToggle: ObservableField<Boolean> = ObservableField(false)
+    var bulbDuration: ObservableField<Double?> = ObservableField(5.0)
+    var intervalToggle: ObservableField<Boolean> = ObservableField(false)
+    var intervalCount: ObservableField<Int?> = ObservableField(50)
+    var intervalDuration: ObservableField<Double?> = ObservableField(3.0)
+    var focusBracketingToggle: ObservableField<Boolean> = ObservableField(false)
+    var focusBracketingAmount: ObservableField<Double?> = ObservableField(2.0)
+
+    fun storeAdvancedControlsState() {
+        viewModelScope.launch {
+            settingsStore.setAdvancedControlsState(
+                SettingsStore.AdvancedControlsStateOptional(
+                    bulbToggle.get(),
+                    bulbDuration.get(),
+                    intervalToggle.get(),
+                    intervalCount.get(),
+                    intervalDuration.get(),
+                    focusBracketingToggle.get(),
+                    focusBracketingAmount.get()
+                )
+            )
+        }
+    }
+
+    fun onAdvancedControlsTextChanged(s: Editable) {
+        storeAdvancedControlsState()
+    }
+
+    val advancedControlsChangedCallback = object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+            storeAdvancedControlsState()
+        }
+    }
 
     sealed class CameraUIAction
 
@@ -60,8 +86,23 @@ class CameraViewModel : ViewModel() {
     private val _uiAction = MutableSharedFlow<CameraUIAction>()
     val uiAction = _uiAction.asSharedFlow()
 
+    private val settingsStore = SettingsStore(application)
+
+
     init {
         viewModelScope.launch {
+            settingsStore.getAdvancedControlsState().let { saved ->
+                bulbToggle.set(saved.bulbEnabled)
+                bulbDuration.set(saved.bulbDuration)
+                intervalCount.set(saved.intervalCount)
+                intervalToggle.set(saved.intervalEnabled)
+                intervalDuration.set(saved.intervalDuration)
+                focusBracketingToggle.set(saved.focusBracketingEnabled)
+                focusBracketingAmount.set(saved.focusBracketingAmount)
+            }
+            bulbToggle.addOnPropertyChangedCallback(advancedControlsChangedCallback)
+            intervalToggle.addOnPropertyChangedCallback(advancedControlsChangedCallback)
+            focusBracketingToggle.addOnPropertyChangedCallback(advancedControlsChangedCallback)
             AlphaRemoteService.serviceState.collectLatest {
                 (it as? ServiceRunning)?.also { serviceRunning ->
                     _uiState.value = uiState.value.copy(
@@ -108,5 +149,4 @@ class CameraViewModel : ViewModel() {
             _uiAction.emit(GenericCameraUIAction(GenericCameraUIActionType.START_ADVANCED_SEQUENCE))
         }
     }
-
 }

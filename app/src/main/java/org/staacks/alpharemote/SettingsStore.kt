@@ -5,8 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import org.staacks.alpharemote.camera.CameraAction
@@ -33,6 +35,14 @@ class SettingsStore(context: Context) {
 
     private val customButtonListBaseKey = "customButtonList"
     private val customButtonListSetByUserKey = booleanPreferencesKey(customButtonListBaseKey + "_setbyuser")
+
+    private val advancedControlsBulbEnabled = booleanPreferencesKey("advancedControlsBulbEnabled")
+    private val advancedControlsBulbDuration = doublePreferencesKey("advancedControlsBulbDuration")
+    private val advancedControlsIntervalEnabled = booleanPreferencesKey("advancedControlsIntervalEnabled")
+    private val advancedControlsIntervalCount = intPreferencesKey("advancedControlsIntervalCount")
+    private val advancedControlsIntervalDuration = doublePreferencesKey("advancedControlsIntervalDuration")
+    private val advancedControlsFocusBracketingEnabled = booleanPreferencesKey("advancedControlsBracketingEnabled")
+    private val advancedControlsFocusBracketingAmount = doublePreferencesKey("advancedControlsBracketingAmount")
 
     private val broadcastControlKey = booleanPreferencesKey("broadcastControl")
 
@@ -176,6 +186,66 @@ class SettingsStore(context: Context) {
     suspend fun getCustomButtonList(): List<CameraAction>? {
         return settings.data.firstOrNull()?.let {
             assembleCameraActionList(it)
+        }
+    }
+
+    data class AdvancedControlsState (
+        var bulbEnabled: Boolean,
+        var bulbDuration: Double,
+        var intervalEnabled: Boolean,
+        var intervalCount: Int,
+        var intervalDuration: Double,
+        var focusBracketingEnabled: Boolean,
+        var focusBracketingAmount: Double,
+    )
+
+    data class AdvancedControlsStateOptional (
+        var bulbEnabled: Boolean?,
+        var bulbDuration: Double?,
+        var intervalEnabled: Boolean?,
+        var intervalCount: Int?,
+        var intervalDuration: Double?,
+        var focusBracketingEnabled: Boolean?,
+        var focusBracketingAmount: Double?,
+    )
+
+    suspend fun setAdvancedControlsState(state: AdvancedControlsStateOptional) {
+        settings.edit { data ->
+            state.bulbEnabled?.let {
+                data[advancedControlsBulbEnabled] = it
+            }
+            state.bulbDuration?.let {
+                data[advancedControlsBulbDuration] = it
+            }
+            state.intervalEnabled?.let {
+                data[advancedControlsIntervalEnabled] = it
+            }
+            state.intervalCount?.let {
+                data[advancedControlsIntervalCount] = it
+            }
+            state.intervalDuration?.let {
+                data[advancedControlsIntervalDuration] = it
+            }
+            state.focusBracketingEnabled?.let {
+                data[advancedControlsFocusBracketingEnabled] = it
+            }
+            state.focusBracketingAmount?.let {
+                data[advancedControlsFocusBracketingAmount] = it
+            }
+        }
+    }
+
+    suspend fun getAdvancedControlsState(): AdvancedControlsState {
+        return settings.data.firstOrNull().let {
+            AdvancedControlsState(
+                it?.get(advancedControlsBulbEnabled) ?: false,
+                it?.get(advancedControlsBulbDuration) ?: 5.0,
+                it?.get(advancedControlsIntervalEnabled) ?: false,
+                it?.get(advancedControlsIntervalCount) ?: 50,
+                it?.get(advancedControlsIntervalDuration) ?: 3.0,
+                it?.get(advancedControlsFocusBracketingEnabled) ?: false,
+                it?.get(advancedControlsFocusBracketingAmount) ?: 2.0,
+            )
         }
     }
 
