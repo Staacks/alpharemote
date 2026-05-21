@@ -1,0 +1,3 @@
+- Focus bracketing as additional option in advanced drawer. (Use with intervalometer.)
+- Save advanced controls settings like intervalometer, bulb and focus bracketing settings.
+- Bug fixes (especially a crash on some devices)

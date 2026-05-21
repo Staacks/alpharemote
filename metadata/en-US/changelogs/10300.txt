@@ -1,0 +1,1 @@
+- Fix: Jog buttons are not released when action sequence is cancelled (i.e. stuck focus jog when cancelling focus bracketing)

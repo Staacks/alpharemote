@@ -1,0 +1,4 @@
+- Focus Bracketing als neue zusätzliche Funktion zur Nutzung mit dem Intervallometer.
+- Intervallometereinstellungen werden jetzt gespeichert
+- Bugfixes (vor allem ein Crash auf manchen Geräten)
+
