@@ -306,6 +306,9 @@ class AlphaRemoteService : CompanionDeviceService() {
             for (button in ButtonCode.entries) {
                 cameraBLE?.executeCameraActionStep(CAButton(false, button))
             }
+            for (jog in JogCode.entries) {
+                cameraBLE?.executeCameraActionStep(CAJog(false, -1, jog))
+            }
             pendingStepsCancelled = true
             updatePendingActionStatistics()
         }
