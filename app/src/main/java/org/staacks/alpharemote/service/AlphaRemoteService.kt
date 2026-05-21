@@ -47,6 +47,7 @@ import java.util.LinkedList
 import java.util.Timer
 import java.util.TimerTask
 import kotlin.concurrent.schedule
+import kotlin.math.max
 import kotlin.math.roundToLong
 
 
@@ -282,7 +283,7 @@ class AlphaRemoteService : CompanionDeviceService() {
 
                 startCameraAction(
                     stepSequencePrepare + stepSequenceTrigger
-                            + List(intervalCount-1) {stepSequencePrepare + focusSequence + stepSequenceTrigger}.flatten()
+                            + List(max(intervalCount-1, 0)) {stepSequencePrepare + focusSequence + stepSequenceTrigger}.flatten()
                 )
             }
         }

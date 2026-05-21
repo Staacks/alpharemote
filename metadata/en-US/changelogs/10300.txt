@@ -1,1 +1,3 @@
+- Move focus bracketing step after intervalometer pause, so the camera can settle for more consistent focus steps.
 - Fix: Jog buttons are not released when action sequence is cancelled (i.e. stuck focus jog when cancelling focus bracketing)
+
