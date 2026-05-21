@@ -3,10 +3,10 @@ A Bluetooth remote control app for Sony Alpha cameras that is immediately availa
 The app uses Android's companion app feature, meaning that it does not actively scan for your camera, but is only started by Android when the camera has been seen by the system - and the app's service is shut down as soon as it is turned off again. The remote control buttons are there when you need them, but no resources or screenspace are used otherwise.
 
 So far, this app has only been tested with the following cameras:
-ILCE-6400 (α6400), ILCE-6600 (α6600), ILCE-6700 (α6700), ILCE-7M3 (α7 III), ILCE-7CM2 (α7C II), ILCE-7M4 (α7 IV), ILCE-7RM3 (α7R III), ILCE-7RM4 (α7R IV), ILCE-9 (α9), ZV-E10
+ILCE-6400 (α6400), ILCE-6600 (α6600), ILCE-6700 (α6700), ILCE-7M3 (α7 III), ILCE-7CM2 (α7C II), ILCE-7M4 (α7 IV), ILCE-7RM3 (α7R III), ILCE-7RM4 (α7R IV), ILCE-7RM5 (α7R V), ILCE-9 (α9), ILME-FX30, ZV-E10
 
 It is expected to work with any Sony camera that supports Bluetooth remotes, including the following models:
-DSC-RX100M7, DSC-RX100M7G, ZV-1, ILCE-7M4K, ILCE-7RM4A, ZV-E10, ZV-E10L, ILCE-1, ILCE-7C, ILCE-7CL, ILCE-7SM3, ILCE-9M2, ILCE-6100, ILCE-6100L, ILCE-6100Y, ILCE-6600M, ILCE-6400L, ILCE-6400M, ILCE-7M3, ILCE-7M3K, ILCE-7RM3, ILCE-9
+DSC-RX100M7, DSC-RX100M7G, ZV-1, ILCE-7M4K, ILCE-7RM4A, ZV-E10, ZV-E10L, ILCE-1, ILCE-7C, ILCE-7CL, ILCE-7SM3, ILCE-9M2, ILCE-6100, ILCE-6100L, ILCE-6100Y, ILCE-6600M, ILCE-6400L, ILCE-6400M, ILCE-7M3, ILCE-7M3K, ILCE-7RM3, ILCE-9, ILME-FX2, ILME-FX3, ILME-FX3A, ILX-LR1
 
 If you have one of those cameras, I would be happy to get feedback on how well it works with this app.
 

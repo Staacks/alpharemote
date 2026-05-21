@@ -3,10 +3,10 @@ Eine Bluetooth-Fernbedienungs-App für Sony Alpha Kameras, die sofort im Benachr
 Die App nutzt die Companion-App-Funktion von Android, was bedeutet, dass sie nicht aktiv nach deiner Kamera sucht, sondern nur von Android gestartet wird, wenn die Kamera vom System erkannt wurde. Der Dienst der App wird sofort beendet, sobald die Kamera wieder ausgeschaltet wird. Die Fernbedienungstasten sind genau dann verfügbar, wenn du sie brauchst, aber ansonsten werden keine Ressourcen oder Bildschirmflächen belegt.
 
 Bisher wurden die folgenden Kameras erfolgreich getestet:
-ILCE-6400 (α6400), ILCE-6600 (α6600), ILCE-6700 (α6700), ILCE-7M3 (α7 III), ILCE-7CM2 (α7C II), ILCE-7M4 (α7 IV), ILCE-7RM3 (α7R III), ILCE-7RM4 (α7R IV), ILCE-9 (α9), ZV-E10
+ILCE-6400 (α6400), ILCE-6600 (α6600), ILCE-6700 (α6700), ILCE-7M3 (α7 III), ILCE-7CM2 (α7C II), ILCE-7M4 (α7 IV), ILCE-7RM3 (α7R III), ILCE-7RM4 (α7R IV), ILCE-7RM5 (α7R V), ILCE-9 (α9), ZV-E10
 
 Es wird erwartet, dass sie mit jeder Sony-Kamera funktioniert, die Bluetooth-Fernbedienungen unterstützt, darunter die folgenden Modelle:
-DSC-RX100M7, DSC-RX100M7G, ZV-1, ILCE-7M4K, ILCE-7RM4A, ZV-E10, ZV-E10L, ILCE-1, ILCE-7C, ILCE-7CL, ILCE-7SM3, ILCE-9M2, ILCE-6100, ILCE-6100L, ILCE-6100Y, ILCE-6600M, ILCE-6400L, ILCE-6400M, ILCE-7M3, ILCE-7M3K, ILCE-7RM3, ILCE-9
+DSC-RX100M7, DSC-RX100M7G, ZV-1, ILCE-7M4K, ILCE-7RM4A, ZV-E10, ZV-E10L, ILCE-1, ILCE-7C, ILCE-7CL, ILCE-7SM3, ILCE-9M2, ILCE-6100, ILCE-6100L, ILCE-6100Y, ILCE-6600M, ILCE-6400L, ILCE-6400M, ILCE-7M3, ILCE-7M3K, ILCE-7RM3, ILCE-9, ILME-FX2, ILME-FX3, ILME-FX3A, ILX-LR1
 
 Falls du eine dieser Kameras hast, würde ich mich über dein Feedback freuen, wie gut die App damit funktioniert.
 
