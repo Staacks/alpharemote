@@ -246,19 +246,21 @@ class AlphaRemoteService : CompanionDeviceService() {
                 val intervalCount = intent.getSerializableExtra(ADVANCED_SEQUENCE_INTENT_INTERVAL_COUNT_EXTRA) as Int
                 val focusBracketingAmount = intent.getSerializableExtra(ADVANCED_SEQUENCE_INTENT_FOCUS_BRACKETING_AMOUNT_EXTRA) as Float
 
-                val stepSequence: MutableList<CameraActionStep> = mutableListOf()
-                stepSequence += CAButton(pressed = true, ButtonCode.SHUTTER_HALF)
+                val stepSequencePrepare: MutableList<CameraActionStep> = mutableListOf()
+                stepSequencePrepare += CAButton(pressed = true, ButtonCode.SHUTTER_HALF)
                 if (intervalDuration > 0) {
-                    stepSequence += CACountdown(getString(R.string.camera_advanced_interval_timer_label), intervalDuration)
+                    stepSequencePrepare += CACountdown(getString(R.string.camera_advanced_interval_timer_label), intervalDuration)
                 }
-                stepSequence += CAButton(pressed = true, ButtonCode.SHUTTER_FULL, isSequenceTrigger = true)
+
+                val stepSequenceTrigger: MutableList<CameraActionStep> = mutableListOf()
+                stepSequenceTrigger += CAButton(pressed = true, ButtonCode.SHUTTER_FULL, isSequenceTrigger = true)
                 if (bulbDuration > 0) {
-                    stepSequence += CAWaitFor(WaitTarget.SHUTTER)
+                    stepSequenceTrigger += CAWaitFor(WaitTarget.SHUTTER)
                 }
-                stepSequence += CAButton(pressed = false, ButtonCode.SHUTTER_FULL)
-                stepSequence += CAButton(pressed = false, ButtonCode.SHUTTER_HALF)
+                stepSequenceTrigger += CAButton(pressed = false, ButtonCode.SHUTTER_FULL)
+                stepSequenceTrigger += CAButton(pressed = false, ButtonCode.SHUTTER_HALF)
                 if (bulbDuration > 0) {
-                    stepSequence += listOf(
+                    stepSequenceTrigger += listOf(
                         CACountdown(getString(R.string.camera_advanced_bulb_timer_label), bulbDuration),
                         CAButton(pressed = true, ButtonCode.SHUTTER_HALF),
                         CAButton(pressed = true, ButtonCode.SHUTTER_FULL),
@@ -266,8 +268,9 @@ class AlphaRemoteService : CompanionDeviceService() {
                         CAButton(pressed = false, ButtonCode.SHUTTER_HALF),
                     )
                 }
-                if (focusBracketingAmount > 0) {
-                    stepSequence += listOf(
+
+                val focusSequence = if (focusBracketingAmount > 0) {
+                    listOf(
                         CAWaitFor(WaitTarget.SHUTTER, true), //Wait for the exposure to finish
                         CAButton(pressed = true, ButtonCode.SHUTTER_HALF), //Dismiss immediate preview by half pressing shutter
                         CAButton(pressed = false, ButtonCode.SHUTTER_HALF),
@@ -275,10 +278,11 @@ class AlphaRemoteService : CompanionDeviceService() {
                         CACountdown(getString(R.string.camera_advanced_focus_bracketing_timer_label), focusBracketingAmount),
                         CAJog(false, JogCode.FOCUS_FAR.maxStep, JogCode.FOCUS_FAR)
                     )
-                }
+                } else listOf()
 
                 startCameraAction(
-                    List(intervalCount) {stepSequence}.flatten()
+                    stepSequencePrepare + stepSequenceTrigger
+                            + List(intervalCount-1) {stepSequencePrepare + focusSequence + stepSequenceTrigger}.flatten()
                 )
             }
         }

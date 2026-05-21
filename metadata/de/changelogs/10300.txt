@@ -1,1 +1,2 @@
-- Fix: Jog buttons are not released when action sequence is cancelled (i.e. stuck focus jog when cancelling focus bracketing)
+- Fix: Jog Buttons nicht wieder losgelassen, wenn eine Sequenz abgebrochen wird (konkret steckte die Fokus-Verfahr-Taste beim Abbruch des Fokus Bracketings fest)
+- Fokus Bracketing Schritt hinte die Pause des Intervalometers verschoben, damit die Kamera vorherige Operationen beenden kann und konsistentere Fokusschritte möglich werden.
