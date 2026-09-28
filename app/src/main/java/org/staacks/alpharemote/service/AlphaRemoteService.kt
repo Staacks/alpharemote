@@ -420,7 +420,7 @@ class AlphaRemoteService : CompanionDeviceService() {
                     pendingActionSteps.removeFirst()
                     executeNextCameraActionStep()
                 }
-                WaitTarget.RECORDING -> if (state.shutter.state != nextAction.invert) {
+                WaitTarget.RECORDING -> if (state.recording.state != nextAction.invert) {
                     pendingActionSteps.removeFirst()
                     executeNextCameraActionStep()
                 }
