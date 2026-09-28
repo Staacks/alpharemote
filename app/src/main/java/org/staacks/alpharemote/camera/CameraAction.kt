@@ -2,6 +2,7 @@ package org.staacks.alpharemote.camera
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.view.KeyEvent
 import org.staacks.alpharemote.R
 import java.io.Serializable
 import kotlin.math.roundToInt
@@ -11,7 +12,8 @@ data class CameraAction (
     val selftimer: Float?,
     val duration: Float?,
     val step: Float?,
-    val preset: CameraActionPreset
+    val preset: CameraActionPreset,
+    val keyCode: Int? = null            // Physical key that triggers this action while the app is in the foreground
 ) : Serializable {
     fun getIcon(context: Context): Drawable {
         return CameraActionIcon(context, this)
@@ -21,7 +23,8 @@ data class CameraAction (
                 (if (toggle) " " + context.getString(R.string.toggle) else "") +
                 (if (selftimer != null) " timer=" + selftimer + "s" else "") +
                 (if (duration != null) " duration=" + duration + "s" else "") +
-                (if (step != null) " " + "›".repeat((3.0*step).roundToInt()) else "")
+                (if (step != null) " " + "›".repeat((3.0*step).roundToInt()) else "") +
+                (if (keyCode != null) " [" + keyCodeDisplayName(keyCode) + "]" else "")
     }
     private fun applyStepToStepList(list: List<CameraActionStep>): List<CameraActionStep> {
         return list.map {
@@ -54,6 +57,12 @@ data class CameraAction (
             getPressStepList(context) + getReleaseStepList()
         }
     }
+}
+
+// KEYCODE_VOLUME_UP -> "Volume Up"
+fun keyCodeDisplayName(keyCode: Int): String {
+    return KeyEvent.keyCodeToString(keyCode).removePrefix("KEYCODE_").split("_")
+        .joinToString(" ") { it.lowercase().replaceFirstChar(Char::uppercase) }
 }
 
 data class CameraActionTemplate (

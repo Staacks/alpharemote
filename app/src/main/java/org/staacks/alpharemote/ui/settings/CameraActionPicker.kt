@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -34,6 +35,7 @@ class CameraActionPicker : DialogFragment() {
     private val binding get() = _binding!!
 
     private var index = -1
+    private var capturingKey = false
 
     val defaultAction = CameraAction(
         false, null, null, null, CameraActionPreset.STOP
@@ -211,6 +213,16 @@ class CameraActionPicker : DialogFragment() {
 
         })
 
+        binding.capKeyBind.setOnClickListener {
+            setCapturingKey(true)
+        }
+
+        binding.capKeyClear.setOnClickListener {
+            lifecycleScope.launch {
+                cameraAction.emit(cameraAction.value.copy(keyCode = null))
+            }
+        }
+
         binding.capCancel.setOnClickListener{
             (parentFragment as? CameraActionPickerListener)?.onCancelCameraActionPicker()
             dismiss()
@@ -222,7 +234,8 @@ class CameraActionPicker : DialogFragment() {
                 selftimer = if (options.contains(CameraActionTemplateOption.SELFTIMER)) action.selftimer else null,
                 duration = if (options.contains(CameraActionTemplateOption.VARIABLE_DURATION)) action.duration else null,
                 toggle = options.contains(CameraActionTemplateOption.TOGGLE) && action.toggle,
-                step = if (options.contains(CameraActionTemplateOption.ADJUST_SPEED)) action.step else null
+                step = if (options.contains(CameraActionTemplateOption.ADJUST_SPEED)) action.step else null,
+                keyCode = action.keyCode
             )
             (parentFragment as? CameraActionPickerListener)?.onConfirmCameraActionPicker(
                 index, prunedAction
@@ -272,10 +285,30 @@ class CameraActionPicker : DialogFragment() {
                 it.step?.let { step ->
                     binding.capSpeed.progress = (step * 100f).roundToInt()
                 }
+                binding.capKeyClear.visibility = if (it.keyCode != null) VISIBLE else GONE
             }
         }
 
-        return AlertDialog.Builder(requireActivity()).setView(binding.root).create()
+        return AlertDialog.Builder(requireActivity()).setView(binding.root).create().apply {
+            setOnKeyListener { _, keyCode, event ->
+                if (!capturingKey || KeyEvent.isModifierKey(keyCode) || keyCode == KeyEvent.KEYCODE_UNKNOWN)
+                    return@setOnKeyListener false
+                if (event.action == KeyEvent.ACTION_UP) {
+                    setCapturingKey(false)
+                    if (keyCode != KeyEvent.KEYCODE_BACK) {
+                        lifecycleScope.launch {
+                            cameraAction.emit(cameraAction.value.copy(keyCode = keyCode))
+                        }
+                    }
+                }
+                true
+            }
+        }
+    }
+
+    private fun setCapturingKey(capturing: Boolean) {
+        capturingKey = capturing
+        binding.capKeyBind.setText(if (capturing) R.string.key_binding_press_key else R.string.key_binding_bind)
     }
 
     override fun onDestroyView() {

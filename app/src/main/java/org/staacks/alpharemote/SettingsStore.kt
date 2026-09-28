@@ -46,7 +46,7 @@ class SettingsStore(context: Context) {
 
     private val broadcastControlKey = booleanPreferencesKey("broadcastControl")
 
-    private fun setNullableFloat(data: MutablePreferences, key: Preferences.Key<Float>, value: Float?) {
+    private fun <T> setNullable(data: MutablePreferences, key: Preferences.Key<T>, value: T?) {
         if (value == null) {
             data -= key
         } else {
@@ -124,13 +124,15 @@ class SettingsStore(context: Context) {
                 val keySelftimer = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_selftimer")
                 val keyDuration = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_duration")
                 val keyStep = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_step")
+                val keyKeyCode = intPreferencesKey(customButtonListBaseKey + "_" + i + "_keycode")
 
                 data[keyPreset] = item.preset.name
                 data[keyToggle] = item.toggle
 
-                setNullableFloat(data, keySelftimer, item.selftimer)
-                setNullableFloat(data, keyDuration, item.duration)
-                setNullableFloat(data, keyStep, item.step)
+                setNullable(data, keySelftimer, item.selftimer)
+                setNullable(data, keyDuration, item.duration)
+                setNullable(data, keyStep, item.step)
+                setNullable(data, keyKeyCode, item.keyCode)
             }
             var i = list.count()
             while (true) {
@@ -139,6 +141,7 @@ class SettingsStore(context: Context) {
                 val keySelftimer = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_selftimer")
                 val keyDuration = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_duration")
                 val keyStep = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_step")
+                val keyKeyCode = intPreferencesKey(customButtonListBaseKey + "_" + i + "_keycode")
 
                 if (!data.contains(keyPreset))
                     break
@@ -148,6 +151,7 @@ class SettingsStore(context: Context) {
                 data -= keySelftimer
                 data -= keyDuration
                 data -= keyStep
+                data -= keyKeyCode
                 i++
             }
         }
@@ -165,6 +169,7 @@ class SettingsStore(context: Context) {
             val keySelftimer = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_selftimer")
             val keyDuration = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_duration")
             val keyStep = floatPreferencesKey(customButtonListBaseKey + "_" + i + "_step")
+            val keyKeyCode = intPreferencesKey(customButtonListBaseKey + "_" + i + "_keycode")
 
             if (!data.contains(keyPreset))
                 break
@@ -174,7 +179,8 @@ class SettingsStore(context: Context) {
                 data[keySelftimer],
                 data[keyDuration],
                 data[keyStep],
-                CameraActionPreset.valueOf(data[keyPreset] ?: CameraActionPreset.STOP.name)
+                CameraActionPreset.valueOf(data[keyPreset] ?: CameraActionPreset.STOP.name),
+                data[keyKeyCode]
             ))
 
             i++

@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 import org.staacks.alpharemote.camera.CameraActionPreset
 import org.staacks.alpharemote.camera.JogCode
 import org.staacks.alpharemote.ui.settings.CompanionDeviceHelper
+import java.io.Serializable
 import java.util.LinkedList
 import java.util.Timer
 import java.util.TimerTask
@@ -70,6 +71,18 @@ class AlphaRemoteService : CompanionDeviceService() {
 
         fun disconnect() {
             cameraBLE?.disconnectFromDevice()
+        }
+
+        fun sendCameraAction(context: Context, cameraAction: CameraAction, down: Boolean = true, up: Boolean = true) {
+            if (serviceState.value !is ServiceRunning)
+                return
+            val intent = Intent(context, AlphaRemoteService::class.java).apply {
+                action = BUTTON_INTENT_ACTION
+                putExtra(BUTTON_INTENT_CAMERA_ACTION_EXTRA, cameraAction as Serializable)
+                putExtra(BUTTON_INTENT_CAMERA_ACTION_DOWN_EXTRA, down)
+                putExtra(BUTTON_INTENT_CAMERA_ACTION_UP_EXTRA, up)
+            }
+            context.startService(intent)
         }
 
         const val BUTTON_INTENT_ACTION = "NOTIFICATION_BUTTON"

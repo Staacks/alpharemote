@@ -42,7 +42,6 @@ import org.staacks.alpharemote.databinding.FragmentCameraBinding
 import org.staacks.alpharemote.service.AlphaRemoteService
 import org.staacks.alpharemote.service.ServiceRunning
 import org.staacks.alpharemote.ui.help.HelpDialogFragment
-import java.io.Serializable
 import kotlin.concurrent.timer
 
 
@@ -179,18 +178,10 @@ class CameraFragment : Fragment() {
     }
 
     private fun sendCameraActionToService(cameraAction: CameraAction, event: Int?) {
-        if (AlphaRemoteService.serviceState.value is ServiceRunning) {
-            val intent = Intent(context, AlphaRemoteService::class.java).apply {
-                action = AlphaRemoteService.BUTTON_INTENT_ACTION
-                putExtra(AlphaRemoteService.BUTTON_INTENT_CAMERA_ACTION_EXTRA, cameraAction as Serializable)
-                event?.let {
-                    if (event == MotionEvent.ACTION_DOWN)
-                        putExtra(AlphaRemoteService.BUTTON_INTENT_CAMERA_ACTION_UP_EXTRA, false)
-                    else
-                        putExtra(AlphaRemoteService.BUTTON_INTENT_CAMERA_ACTION_DOWN_EXTRA, false)
-                }
-            }
-            context?.startService(intent)
+        context?.let {
+            AlphaRemoteService.sendCameraAction(it, cameraAction,
+                down = event == null || event == MotionEvent.ACTION_DOWN,
+                up = event != MotionEvent.ACTION_DOWN)
         }
     }
 

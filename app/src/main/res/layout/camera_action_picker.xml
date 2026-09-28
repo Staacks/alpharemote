@@ -190,13 +190,43 @@
         app:layout_constraintTop_toBottomOf="@id/cap_speed_label"
         />
 
+    <TextView
+        android:id="@+id/cap_key_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/key_binding_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cap_key_bind"
+        app:layout_constraintBottom_toBottomOf="@id/cap_key_bind" />
+
+    <Button
+        android:id="@+id/cap_key_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/cap_key_bind"
+        app:layout_constraintTop_toTopOf="@id/cap_key_bind"
+        android:text="@string/key_binding_clear" />
+
+    <Button
+        android:id="@+id/cap_key_bind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cap_speed"
+        android:text="@string/key_binding_bind" />
+
     <Button
         android:id="@+id/cap_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cap_speed"
+        app:layout_constraintTop_toBottomOf="@id/cap_key_bind"
         android:text="@string/save" />
 
     <Button
@@ -206,7 +236,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@id/cap_save"
-        app:layout_constraintTop_toBottomOf="@id/cap_speed"
+        app:layout_constraintTop_toBottomOf="@id/cap_key_bind"
         android:text="@string/cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

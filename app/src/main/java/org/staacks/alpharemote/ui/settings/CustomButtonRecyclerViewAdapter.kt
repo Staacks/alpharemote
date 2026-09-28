@@ -101,19 +101,22 @@ class CustomButtonRecyclerViewAdapter(private val dataSet: MutableStateFlow<List
 
     @Synchronized
     fun updateItem(index: Int, action: CameraAction) {
-        list?.let {
+        list?.toMutableList()?.let { newList ->
+            // A physical key can only trigger one action, so it is taken away from any other action
+            for ((i, other) in newList.withIndex()) {
+                if (i != index && action.keyCode != null && other.keyCode == action.keyCode) {
+                    newList[i] = other.copy(keyCode = null)
+                    notifyItemChanged(i)
+                }
+            }
             if (index < 0) {
-                val pos = it.count()
-                list = it.toMutableList().apply {
-                    add(pos, action)
-                }
-                notifyItemInserted(pos)
+                newList.add(action)
+                notifyItemInserted(newList.lastIndex)
             } else {
-                list = it.toMutableList().apply {
-                    set(index, action)
-                }
+                newList[index] = action
                 notifyItemChanged(index)
             }
+            list = newList
             dataSet.value = list
         }
     }
