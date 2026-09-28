@@ -1,0 +1,2 @@
+- Weise den anpassbaren Tasten physische Tasten zu, was es insbesondere erlaubt, generische Bluetooth Fernbedienungen als Auslöser zu nutzen, Dank an Kristián Jacik.
+

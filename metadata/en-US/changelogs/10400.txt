@@ -1,0 +1,2 @@
+- Add physical key bindings for custom buttons, in particular allowing to use generic Bluetooth remotes as a trigger, thanks to Kristián Jacik.
+
