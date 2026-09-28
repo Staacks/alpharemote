@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "org.staacks.alpharemote"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.staacks.alpharemote"
         minSdk = 31
-        targetSdk = 36
-        versionCode = 10300 //xyyzz -> x.y and z for subversions like betas if required.
-        versionName = "1.3"
+        targetSdk = 37
+        versionCode = 10400 //xyyzz -> x.y and z for subversions like betas if required.
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,8 +27,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
@@ -43,13 +43,13 @@ android {
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_1_8
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
@@ -58,7 +58,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.media)
     implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
